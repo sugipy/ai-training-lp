@@ -1,0 +1,634 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>問い合わせ連携ワークフロー — HPの申込を、LINEとSlackで取りこぼさない</title>
+<meta name="description" content="ホームページの申込・問い合わせを受付番号でLINEにつなぎ、担当者のやりとりをSlackの1スレッドに集め、前日リマインドまで自動で送る仕組みを構築します。">
+
+<style>
+  :root {
+    --paper:   #F2F3EF;
+    --paper-2: #E9EBE4;
+    --ink:     #131A22;
+    --ink-2:   #4A5460;
+    --ink-3:   #767E88;
+    --indigo:  #24406B;
+    --live:    #3B6E4F;
+    --warn:    #8A5A1F;
+    --rule:    #CBCEC5;
+    --rule-2:  #DDE0D8;
+
+    --font-display: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif JP", "Times New Roman", serif;
+    --font-body: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Yu Gothic", YuGothic, "Noto Sans JP", sans-serif;
+    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Hiragino Kaku Gothic ProN", monospace;
+
+    --measure: 34rem;
+    --page: 68rem;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:   #11151A;
+      --paper-2: #191E25;
+      --ink:     #E7E9E3;
+      --ink-2:   #A3ABB4;
+      --ink-3:   #7B838D;
+      --indigo:  #8FADDD;
+      --live:    #7FB894;
+      --warn:    #D9A766;
+      --rule:    #2E353E;
+      --rule-2:  #232931;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper:   #11151A;
+    --paper-2: #191E25;
+    --ink:     #E7E9E3;
+    --ink-2:   #A3ABB4;
+    --ink-3:   #7B838D;
+    --indigo:  #8FADDD;
+    --live:    #7FB894;
+    --warn:    #D9A766;
+    --rule:    #2E353E;
+    --rule-2:  #232931;
+  }
+
+  html, body { margin: 0; background: var(--paper); }
+  .page {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.85;
+    font-feature-settings: "palt" 1;
+    -webkit-font-smoothing: antialiased;
+    padding: 0 1rem 5rem;
+  }
+  @media (min-width: 721px) { .page { padding: 0 1.5rem 5rem; } }
+  .page * { box-sizing: border-box; }
+  .wrap { max-width: var(--page); margin: 0 auto; }
+
+  .crumb {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    color: var(--ink-3);
+    padding-top: 1.5rem;
+  }
+  .crumb a { color: var(--ink-3); text-decoration: none; border-bottom: 1px solid var(--rule); }
+  .crumb a:hover { color: var(--indigo); border-bottom-color: var(--indigo); }
+
+  .band {
+    display: grid;
+    grid-template-columns: 9rem minmax(0, 1fr);
+    gap: 1.25rem 3.5rem;
+    padding: 4.5rem 0;
+    border-top: 1px solid var(--rule);
+    align-items: start;
+  }
+  .band > .label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    padding-top: 0.7rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+  .band > .body { min-width: 0; display: flex; flex-direction: column; gap: 1.5rem; }
+
+  h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3.2vw, 2.125rem);
+    font-weight: 600;
+    line-height: 1.45;
+    letter-spacing: 0.01em;
+    margin: 0;
+    text-wrap: balance;
+  }
+  h3 { font-size: 1.0625rem; font-weight: 700; line-height: 1.6; margin: 0; letter-spacing: 0.01em; }
+  p { margin: 0; max-width: var(--measure); color: var(--ink-2); }
+  p.lead { color: var(--ink); font-size: 1.0625rem; }
+  b { color: var(--ink); }
+  a { color: inherit; }
+  a:focus-visible { outline: 2px solid var(--indigo); outline-offset: 3px; }
+
+  /* ── ヒーロー ── */
+  .hero { padding: clamp(3rem, 10vh, 6.5rem) 0 3.5rem; }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--indigo);
+    margin: 0 0 1.75rem;
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(1.875rem, 5.6vw, 3.5rem);
+    font-weight: 600;
+    line-height: 1.34;
+    letter-spacing: 0.005em;
+    margin: 0 0 1.75rem;
+    max-width: 22em;
+    text-wrap: balance;
+  }
+  .hero h1 em {
+    font-style: normal;
+    box-shadow: inset 0 -0.42em 0 color-mix(in srgb, var(--indigo) 16%, transparent);
+  }
+  .hero p { font-size: 1.0625rem; max-width: 36rem; }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    margin: 3.5rem 0 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .facts div { padding: 1.25rem 1.5rem 1.25rem 0; border-right: 1px solid var(--rule-2); }
+  .facts div:last-child { border-right: 0; }
+  .facts dt { font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.12em; color: var(--ink-3); margin: 0 0 0.35rem; }
+  .facts dd { margin: 0; font-family: var(--font-display); font-size: 1.5rem; font-weight: 600; line-height: 1.3; }
+  .facts dd small { font-family: var(--font-body); font-size: 0.8125rem; font-weight: 400; color: var(--ink-2); margin-left: 0.3em; }
+
+  .cta-row { display: flex; flex-wrap: wrap; gap: 1rem 1.5rem; align-items: center; margin-top: 2.5rem; }
+  .btn {
+    display: inline-block;
+    background: var(--ink);
+    color: var(--paper);
+    text-decoration: none;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 0.95rem 2rem;
+    border: 1px solid var(--ink);
+    transition: background 140ms ease, color 140ms ease;
+  }
+  .btn:hover { background: var(--indigo); border-color: var(--indigo); color: #fff; }
+  .note { font-size: 0.8125rem; color: var(--ink-3); margin: 0; }
+
+  /* ── 課題 ── */
+  .problems { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+  .problems li {
+    display: grid;
+    grid-template-columns: 1.75rem minmax(0, 1fr);
+    gap: 1rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px dashed var(--rule);
+    max-width: 40rem;
+    color: var(--ink-2);
+  }
+  .problems li::before { content: "×"; font-family: var(--font-mono); color: var(--indigo); line-height: 1.85; }
+
+  /* ── 仕組み（順序があるので番号） ── */
+  .steps { display: flex; flex-direction: column; }
+  .step {
+    display: grid;
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+    gap: 1.5rem;
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--rule-2);
+  }
+  .step:first-child { border-top: 1px solid var(--rule-2); }
+  .step .no {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--indigo);
+    font-variant-numeric: tabular-nums;
+  }
+  .step .no span { display: block; font-family: var(--font-mono); font-size: 0.625rem; letter-spacing: 0.14em; color: var(--ink-3); margin-top: 0.5rem; }
+  .step .detail { display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; }
+  .who {
+    align-self: flex-start;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    padding: 0.1rem 0.55rem;
+    border: 1px solid currentColor;
+    color: var(--ink-3);
+  }
+  .who.auto { color: var(--live); }
+
+  /* ── スレッドの見本 ── */
+  .thread {
+    border: 1px solid var(--rule);
+    background: var(--paper-2);
+    max-width: 40rem;
+    font-size: 0.875rem;
+  }
+  .thread-head {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    color: var(--ink-3);
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .msg { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: 0.75rem; padding: 0.85rem 1rem; border-bottom: 1px solid var(--rule-2); }
+  .msg:last-child { border-bottom: 0; }
+  .msg.parent { background: var(--paper); }
+  .avatar {
+    width: 2rem; height: 2rem;
+    display: grid; place-items: center;
+    font-family: var(--font-mono); font-size: 0.6875rem; font-weight: 700;
+    border: 1px solid var(--rule);
+    color: var(--ink-2);
+    background: var(--paper);
+  }
+  .avatar.bot { color: var(--live); border-color: color-mix(in srgb, var(--live) 45%, transparent); }
+  .msg .name { font-weight: 700; color: var(--ink); font-size: 0.8125rem; }
+  .msg .name time { font-weight: 400; color: var(--ink-3); font-family: var(--font-mono); font-size: 0.6875rem; margin-left: 0.5rem; }
+  .msg p { color: var(--ink-2); max-width: none; line-height: 1.7; }
+  .msg .mention { color: var(--indigo); font-weight: 700; }
+  .msg code { font-family: var(--font-mono); font-size: 0.8125rem; background: var(--paper); border: 1px solid var(--rule); padding: 0 0.3rem; color: var(--ink); }
+  .msg .quote { border-left: 2px solid var(--rule); padding-left: 0.6rem; margin-top: 0.25rem; color: var(--ink-3); }
+
+  /* ── 特徴 ── */
+  .outcomes { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 2.25rem 2.5rem; }
+  .outcomes > div { display: flex; flex-direction: column; gap: 0.6rem; padding-top: 1rem; border-top: 2px solid var(--indigo); }
+  .outcomes p { font-size: 0.9375rem; }
+
+  /* ── 表 ── */
+  .table-scroll { overflow-x: auto; border-top: 2px solid var(--ink); }
+  table { border-collapse: collapse; width: 100%; min-width: 36rem; font-size: 0.875rem; }
+  thead th {
+    font-family: var(--font-mono); font-size: 0.625rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 400; text-align: left;
+    padding: 0.85rem 1rem 0.85rem 0; border-bottom: 1px solid var(--rule); white-space: nowrap;
+  }
+  tbody td { padding: 0.95rem 1rem 0.95rem 0; border-bottom: 1px solid var(--rule-2); vertical-align: top; color: var(--ink-2); }
+  tbody td:first-child { color: var(--ink); font-weight: 700; white-space: nowrap; }
+
+  .chip {
+    display: inline-block; font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.06em;
+    padding: 0.15rem 0.55rem; border: 1px solid currentColor; white-space: nowrap; color: var(--ink-3);
+  }
+  .chip.is-live { color: var(--live); }
+  .chip.is-wip { color: var(--warn); }
+
+  /* ── 向いている業種 ── */
+  .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .tags span { font-size: 0.875rem; padding: 0.35rem 0.8rem; border: 1px solid var(--rule); color: var(--ink-2); }
+
+  /* ── 費用 ── */
+  .price-notes { display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.9375rem; color: var(--ink-2); max-width: 36rem; }
+
+  /* ── FAQ ── */
+  .faq { display: flex; flex-direction: column; max-width: 42rem; }
+  .faq details { border-bottom: 1px solid var(--rule-2); padding: 1rem 0; }
+  .faq details:first-child { border-top: 1px solid var(--rule-2); }
+  .faq summary { cursor: pointer; font-weight: 700; color: var(--ink); list-style: none; display: grid; grid-template-columns: 1.75rem minmax(0,1fr); gap: 0.5rem; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::before { content: "Q"; font-family: var(--font-mono); color: var(--indigo); }
+  .faq details p { margin: 0.6rem 0 0 2.25rem; font-size: 0.9375rem; }
+
+  /* ── 問い合わせ ── */
+  .contact { padding-bottom: 0; }
+  .contact-card { display: flex; flex-direction: column; gap: 1.25rem; }
+  .mail {
+    font-family: var(--font-mono); font-size: clamp(1rem, 3.4vw, 1.5rem); color: var(--indigo);
+    text-decoration: none; border-bottom: 1px solid var(--rule); padding-bottom: 0.4rem;
+    align-self: flex-start; word-break: break-all;
+  }
+  .mail:hover { border-bottom-color: var(--indigo); }
+
+  footer {
+    border-top: 1px solid var(--rule); margin-top: 4rem; padding-top: 1.75rem;
+    font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.08em; color: var(--ink-3);
+    display: flex; flex-wrap: wrap; gap: 0.75rem 2rem;
+  }
+  footer a { color: var(--ink-3); }
+
+  .rise { opacity: 0; transform: translateY(0.6rem); animation: rise 620ms cubic-bezier(.2,.7,.3,1) forwards; }
+  .rise:nth-child(2) { animation-delay: 70ms; }
+  .rise:nth-child(3) { animation-delay: 140ms; }
+  .rise:nth-child(4) { animation-delay: 210ms; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .rise { animation: none; opacity: 1; transform: none; }
+    * { transition-duration: 1ms !important; }
+  }
+
+  @media (max-width: 720px) {
+    .band { grid-template-columns: minmax(0, 1fr); gap: 0.75rem; padding: 3.25rem 0; }
+    .band > .label { padding-top: 0; }
+    .facts div { border-right: 0; border-bottom: 1px solid var(--rule-2); padding-right: 0; }
+    .facts div:last-child { border-bottom: 0; }
+    .step { grid-template-columns: minmax(0, 1fr); gap: 0.75rem; }
+    .step .no { display: flex; align-items: baseline; gap: 0.75rem; font-size: 1.5rem; }
+    .step .no span { margin-top: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="wrap">
+
+    <p class="crumb"><a href="../">Claude Code 導入研修</a> ／ 問い合わせ連携ワークフロー</p>
+
+    <header class="hero">
+      <p class="eyebrow rise">HP × LINE × Slack 連携ワークフロー</p>
+      <h1 class="rise">ホームページの申込を、<em>LINEとSlackで一件も取りこぼさない</em>仕組みに。</h1>
+      <p class="lead rise">体験・見学・来店の申込が入ったら、お客様とはLINEでつながり、社内のやりとりはSlackの1スレッドに集まり、前日にはLINEで自動リマインドが届く。今のホームページを活かしたまま、問い合わせから来店までの流れを組み立て、本物の環境でテストした記録を添えてお渡しします。</p>
+      <div class="cta-row rise">
+        <a class="btn" href="mailto:hunterpresident@gmail.com?subject=%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E9%80%A3%E6%90%BA%E3%83%AF%E3%83%BC%E3%82%AF%E3%83%95%E3%83%AD%E3%83%BC%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6">導入について相談する</a>
+        <p class="note">今の申込の流れを伺うところから。ご相談は無料です。</p>
+      </div>
+
+      <dl class="facts rise">
+        <div><dt>つなぐもの</dt><dd>HP・LINE・Slack</dd></div>
+        <div><dt>申込ごとの記録</dt><dd>1<small>件＝1スレッド</small></dd></div>
+        <div><dt>前日リマインド</dt><dd>自動<small>LINEで送信</small></dd></div>
+        <div><dt>検証中の事例</dt><dd>テニススクール<small>自社で検証中</small></dd></div>
+      </dl>
+    </header>
+
+    <section class="band">
+      <p class="label">課題</p>
+      <div class="body">
+        <h2>申込は来ているのに、その先でこぼれていませんか。</h2>
+        <ul class="problems">
+          <li>フォームの通知メールが他のメールに埋もれ、返信が遅れる</li>
+          <li>誰が対応したのか、日程は決まったのかが、担当者の頭の中にしかない</li>
+          <li>ホームページから来た人と、LINEで話している人が同じ人なのか分からない</li>
+          <li>前日の確認連絡を忘れて、当日に来ない人が出る</li>
+          <li>LINEの配信ツールを入れたが、月額が高いわりにホームページとはつながっていない</li>
+        </ul>
+        <p>原因は、ホームページ・LINE・社内連絡が<b>それぞれ別々に動いている</b>ことです。この仕組みは、3つを「受付番号」でひとつにつなぎます。</p>
+      </div>
+    </section>
+
+    <section class="band">
+      <p class="label">仕組み</p>
+      <div class="body">
+        <h2>お客様がすることは、受付番号をLINEで送るだけ。</h2>
+        <div class="steps">
+          <div class="step">
+            <div class="no">1<span>STEP 01</span></div>
+            <div class="detail">
+              <span class="who">お客様</span>
+              <h3>ホームページから申込む</h3>
+              <p>申込はこれまでどおりホームページで完結します。送信すると<b>受付番号</b>（例: K7M2-Q9PX）が発行され、完了画面と自動返信メールに表示されます。同時にSlackへ申込通知が届きます。</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="no">2<span>STEP 02</span></div>
+            <div class="detail">
+              <span class="who">お客様</span>
+              <h3>ボタンを押して、LINEで受付番号を送る</h3>
+              <p>完了画面のボタンを押すとLINEが開き、受付番号が入力済みの状態になります。友だち追加して送るだけ。LINEに「確認しました」と自動で返事が届きます。</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="no">3<span>STEP 03</span></div>
+            <div class="detail">
+              <span class="who auto">自動</span>
+              <h3>申込とLINEの友だちが、ひとりの人としてつながる</h3>
+              <p>受付番号を照合し、LINEの友だち情報に申込内容（お名前・希望日など）を書き込みます。Slackの申込スレッドには担当者あてに「LINEとつながりました」と届きます。以後、お客様がLINEで送った言葉も同じスレッドに流れてきます。</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="no">4<span>STEP 04</span></div>
+            <div class="detail">
+              <span class="who">担当者</span>
+              <h3>スレッドに「確定」と書くだけで、予約が入る</h3>
+              <p>日程が決まったら、スレッドに <code style="font-family:var(--font-mono);font-size:.875rem">確定 10/14 10:00</code> と書くだけ。変更・キャンセルも同じ書き方です。</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="no">5<span>STEP 05</span></div>
+            <div class="detail">
+              <span class="who auto">自動</span>
+              <h3>前日18時に、LINEでリマインド</h3>
+              <p>確定した予約の前日に、お客様のLINEへリマインドを送り、送ったことをスレッドで担当者に知らせます。LINEでつながっていない方の場合は「電話・メールで連絡を」と担当者に伝えます。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <p class="label">画面の見本</p>
+      <div class="body">
+        <h2>1件の申込の経過が、ひとつのスレッドで追える。</h2>
+        <p>担当者が見る場所はここだけです。誰が・いつ・何をしたかが時系列で残るので、引き継ぎや確認のための聞き直しがなくなります。</p>
+        <div class="thread" role="img" aria-label="Slackの申込スレッドの見本。申込通知のあとに、LINE連携、お客様のメッセージ、日程確定、前日リマインドの通知が続く。">
+          <div class="thread-head"># 体験申込通知 ／ スレッド（見本）</div>
+          <div class="msg parent">
+            <div class="avatar bot">BOT</div>
+            <div>
+              <div class="name">申込受付<time>10:02</time></div>
+              <p>【体験申込】受付番号 K7M2-Q9PX ／ 山田 花子 様 ／ 希望: 平日午前<br>LINE連携: 受付番号の送信待ち</p>
+            </div>
+          </div>
+          <div class="msg">
+            <div class="avatar bot">BOT</div>
+            <div>
+              <div class="name">申込受付<time>10:05</time></div>
+              <p><span class="mention">@担当者</span> 🔗 この申込がLINEとつながりました</p>
+            </div>
+          </div>
+          <div class="msg">
+            <div class="avatar bot">BOT</div>
+            <div>
+              <div class="name">申込受付<time>10:31</time></div>
+              <p><span class="mention">@担当者</span> 💬 LINEでメッセージが届きました</p>
+              <p class="quote">水曜の10時は空いていますか？</p>
+            </div>
+          </div>
+          <div class="msg">
+            <div class="avatar">担</div>
+            <div>
+              <div class="name">担当者<time>10:40</time></div>
+              <p><code>確定 10/14 10:00</code></p>
+            </div>
+          </div>
+          <div class="msg">
+            <div class="avatar bot">BOT</div>
+            <div>
+              <div class="name">申込受付<time>10:40</time></div>
+              <p><span class="mention">@担当者</span> 📅 10月14日（水）10:00 で確定しました。前日18時にLINEでリマインドします</p>
+            </div>
+          </div>
+          <div class="msg">
+            <div class="avatar bot">BOT</div>
+            <div>
+              <div class="name">申込受付<time>10/13 18:00</time></div>
+              <p><span class="mention">@担当者</span> 📩 LINEでリマインドを送りました</p>
+            </div>
+          </div>
+        </div>
+        <p class="note">表示内容は説明用の見本です。お名前・文言は導入先に合わせて設定します。</p>
+      </div>
+    </section>
+
+    <section class="band">
+      <p class="label">特徴</p>
+      <div class="body">
+        <h2>現場が増やす作業は、ほとんどありません。</h2>
+        <div class="outcomes">
+          <div>
+            <h3>LINE登録を強制しない</h3>
+            <p>申込はホームページで完結するので、LINEを使わない方も取りこぼしません。つながった方とはLINEで、そうでない方とは電話・メールで。どちらなのかはスレッドを見れば分かります。</p>
+          </div>
+          <div>
+            <h3>いつものチャットに集まる</h3>
+            <p>新しい管理画面を毎日開く必要はありません。通知・お客様の発言・確定・リマインドの記録が、普段使っているSlackの申込スレッドに集まります。</p>
+          </div>
+          <div>
+            <h3>失敗も同じ場所に出る</h3>
+            <p>番号の打ち間違いや送信・書き込みの失敗の多くは、⚠️ 付きで同じチャンネルに知らせます。担当者が日々の業務の中で異常に気づける作りにしています。</p>
+          </div>
+          <div>
+            <h3>小さく始められる</h3>
+            <p>LINE公式アカウントの無料プランと、Cloudflareの無料枠の範囲で始められる構成です。無料プランは月200通までで、スタッフからの送信とリマインドが数に入ります（自動応答は入りません）。件数が多い場合は有料プランをご検討ください。</p>
+          </div>
+          <div>
+            <h3>いつでも元に戻せる</h3>
+            <p>ホームページ側の設定を外して再公開すれば、LINEボタンが消えて従来の申込フローに戻ります。Slackへの自動書き込みも、設定で個別に止められます。</p>
+          </div>
+          <div>
+            <h3>データは貴社のアカウントに</h3>
+            <p>LINE公式アカウント・Cloudflare・Slackは貴社名義で用意していただきます。照合のために一時的に預かる申込データは、60日で自動的に消える設計です。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <p class="label">導入例</p>
+      <div class="body">
+        <h2>まず自社のテニススクールで検証しています。</h2>
+        <p>自社で運営するテニススクール（神奈川県藤沢市）の体験レッスン申込に組み込み、本番切替に向けて検証しています。本物のLINE・Slackで結合テストを行い、このあと担当コーチの運用リハーサルを経てから本番に切り替えます。</p>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th scope="col">項目</th><th scope="col">内容</th><th scope="col">状態</th></tr></thead>
+            <tbody>
+              <tr><td>LINE連携</td><td>受付番号の送信 → 自動返信 → 友だち情報への申込内容の書き込み → スレッドに通知</td><td><span class="chip is-live">実機テスト合格</span></td></tr>
+              <tr><td>スレッド集約</td><td>お客様のLINEの発言をスレッドに引用して転送</td><td><span class="chip is-live">実機テスト合格</span></td></tr>
+              <tr><td>予約の確定</td><td>スレッドの「確定 日付 時刻」を読み取って予約を登録</td><td><span class="chip is-live">実機テスト合格</span></td></tr>
+              <tr><td>前日リマインド</td><td>前日18時にLINEで送信し、スレッドで担当者に報告</td><td><span class="chip is-wip">実地確認中</span></td></tr>
+              <tr><td>ホームページ</td><td>完了画面・自動返信メールへの受付番号とLINEボタンの表示</td><td><span class="chip is-wip">本番反映の準備中</span></td></tr>
+              <tr><td>運用リハーサル</td><td>担当コーチが申込から体験後のフォローまでを一度通す</td><td><span class="chip">これから</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="note">2026年10月時点。照合部分は自動テスト（59件）を通し、別の担当による検収を実施しています（指摘は修正済み）。</p>
+      </div>
+    </section>
+
+    <section class="band">
+      <p class="label">向いている業種</p>
+      <div class="body">
+        <h2>「申込 → 日程調整 → 来店」がある仕事に。</h2>
+        <div class="tags">
+          <span>スクール・教室の体験レッスン</span>
+          <span>スポーツ施設・ジム</span>
+          <span>サロン・治療院の初回予約</span>
+          <span>住宅・不動産の見学予約</span>
+          <span>説明会・個別相談会</span>
+          <span>採用の応募受付</span>
+        </div>
+        <p>前提として、問い合わせフォームのあるホームページと、社内連絡にSlackをお使いであることを想定しています。フォームがない場合や、ほかの連絡ツールをお使いの場合もご相談ください。</p>
+      </div>
+    </section>
+
+    <section class="band">
+      <p class="label">導入の流れ</p>
+      <div class="body">
+        <h2>本物のLINEとSlackで試してから、本番に切り替えます。</h2>
+        <div class="steps">
+          <div class="step">
+            <div class="no">1<span>HEARING</span></div>
+            <div class="detail"><h3>今の流れを伺う</h3><p>申込から来店まで、誰が・何で・どう連絡しているか。担当者、通知先、リマインドの時刻などを決めます。</p></div>
+          </div>
+          <div class="step">
+            <div class="no">2<span>ACCOUNTS</span></div>
+            <div class="detail"><h3>アカウントの準備</h3><p>LINE公式アカウント・Cloudflare・Slackを貴社名義でご用意いただきます。手順はこちらでご案内し、パスワードや鍵はお客様ご自身で入力していただきます。</p></div>
+          </div>
+          <div class="step">
+            <div class="no">3<span>BUILD</span></div>
+            <div class="detail"><h3>構築と結線</h3><p>ホームページのフォームに受付番号とLINEボタンを加え、LINE・照合サーバー・Slackをつなぎます。</p></div>
+          </div>
+          <div class="step">
+            <div class="no">4<span>TEST</span></div>
+            <div class="detail"><h3>本物の環境でテスト</h3><p>テスト申込で、LINE連携・確定・リマインド・失敗時の通知までを実際に通し、結果を記録してお渡しします。</p></div>
+          </div>
+          <div class="step">
+            <div class="no">5<span>LAUNCH</span></div>
+            <div class="detail"><h3>担当者のリハーサルと本番</h3><p>担当者の方に申込から体験後のフォローまでを一度通していただき、問題がなければ本番に切り替えます。</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <p class="label">費用</p>
+      <div class="body">
+        <h2>構築費は、今の流れを伺ってからお見積もりします。</h2>
+        <div class="price-notes">
+          <p><b>構築費：</b>フォームの改修範囲、担当者の人数、リマインドの種類などで変わるため、ヒアリングのうえでお見積もりします。</p>
+          <p><b>運用費：</b>LINE公式アカウント・Cloudflare・Slackの利用料は、貴社のご契約に応じて各社へ直接お支払いいただきます。無料プランの範囲で始めることもできます。</p>
+          <p><b>自分たちで作りたい場合：</b>この仕組みを題材に、社内で同じものを作れるようになる<a href="../">Claude Code 導入研修</a>もご用意しています。</p>
+        </div>
+        <div class="cta-row">
+          <a class="btn" href="mailto:hunterpresident@gmail.com?subject=%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E9%80%A3%E6%90%BA%E3%83%AF%E3%83%BC%E3%82%AF%E3%83%95%E3%83%AD%E3%83%BC%E3%81%AE%E3%81%8A%E8%A6%8B%E7%A9%8D%E3%82%82%E3%82%8A">見積もりを依頼する</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <p class="label">よくある質問</p>
+      <div class="body">
+        <h2>導入前によく聞かれること。</h2>
+        <div class="faq">
+          <details>
+            <summary>LINEで受付番号を送らないお客様はどうなりますか。</summary>
+            <p>申込自体はホームページで完了しているので、従来どおり電話やメールでご連絡いただけます。スレッドに「LINEとつながりました」が出ていないことで、担当者はすぐ判断できます。</p>
+          </details>
+          <details>
+            <summary>すでにLINE公式アカウントを持っています。</summary>
+            <p>今のアカウントを使うか、申込受付用に新しいアカウントを分けるかを、ヒアリングで一緒に決めます。既存の配信やお客様リストに影響が出ない形を優先します。</p>
+          </details>
+          <details>
+            <summary>個人情報の扱いが心配です。</summary>
+            <p>申込内容とLINEの情報は、貴社名義のアカウントの中に保存されます。受付番号を照合するために一時的に預かる申込データは、60日で自動的に削除されます。</p>
+          </details>
+          <details>
+            <summary>Slackを使っていません。</summary>
+            <p>現在はSlackへの通知を前提に組んでいます。ほかの連絡ツールをお使いの場合は、対応できるかを個別に確認しますのでご相談ください。</p>
+          </details>
+          <details>
+            <summary>うまく動かなくなったらどうなりますか。</summary>
+            <p>送信や書き込みの失敗の多くは、⚠️ 付きでSlackに知らせます。照合の仕組みが止まっていても、ホームページの申込は受け付け、LINEボタンを出さずに従来どおり処理する設計です。必要ならホームページ側の設定を外して、従来の申込フローに戻せます。</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="band contact">
+      <p class="label">お問い合わせ</p>
+      <div class="body">
+        <h2>今の申込の流れを、1つ聞かせてください。</h2>
+        <div class="contact-card">
+          <p>「うちのフォームでもできるのか」という段階のご相談で構いません。仕組みを入れる方が早いのか、研修で自社で作れるようになる方が合っているのかも含めてお答えします。</p>
+          <a class="mail" href="mailto:hunterpresident@gmail.com?subject=%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E9%80%A3%E6%90%BA%E3%83%AF%E3%83%BC%E3%82%AF%E3%83%95%E3%83%AD%E3%83%BC%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6">hunterpresident@gmail.com</a>
+          <p class="note">担当：杉田 光 ／ 通常2営業日以内にご返信します。</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>問い合わせ連携ワークフロー</span>
+      <span>杉田 光</span>
+      <a href="../">Claude Code 導入研修</a>
+    </footer>
+
+  </div>
+</div>
+</body>
+</html>
