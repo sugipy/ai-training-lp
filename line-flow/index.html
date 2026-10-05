@@ -207,6 +207,39 @@
   .hub-legend b { color: var(--brand); }
   .hub-legend p { font-size: .9375rem; color: var(--ink-2); margin-top: 6px; }
 
+  /* ── できること ── */
+  .journey { list-style: none; padding: 0; margin: 0 auto 56px; max-width: 880px; display: grid; grid-template-columns: repeat(5, 1fr); position: relative; }
+  .journey::before { content: ""; position: absolute; left: 10%; right: 10%; top: 27px; height: 3px; background: var(--line); }
+  .journey li { position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
+  .j-dot { width: 56px; height: 56px; border-radius: 50%; background: #fff; border: 3px solid var(--line); display: grid; place-items: center; font-weight: 800; font-size: .8125rem; color: var(--ink-3); position: relative; }
+  .journey li.on .j-dot { background: var(--brand); border-color: var(--brand); color: #fff; box-shadow: 0 6px 16px rgba(36,83,199,.3); }
+  .j-t { font-size: .8125rem; font-weight: 700; color: var(--ink-2); line-height: 1.5; }
+  .journey li.on .j-t { color: var(--brand); }
+  @media (max-width: 559px) { .j-dot { width: 46px; height: 46px; font-size: .6875rem; } .journey::before { top: 22px; } .j-t { font-size: .6875rem; } }
+  .benefit { display: grid; gap: 28px; align-items: center; padding: 40px 0; border-top: 1px solid var(--line); }
+  .benefit:first-of-type { border-top: 0; }
+  @media (min-width: 900px) { .benefit { grid-template-columns: 1.15fr .85fr; gap: 64px; padding: 56px 0; } .benefit.rev .b-text { order: 2; } }
+  .b-no { font-family: var(--mono); font-weight: 800; font-size: 2.75rem; color: var(--brand); line-height: 1; margin-right: 12px; vertical-align: middle; }
+  .b-when { display: inline-block; vertical-align: middle; background: var(--accent); font-weight: 800; font-size: .875rem; border-radius: 999px; padding: 3px 14px; }
+  .benefit h3 { font-size: clamp(1.375rem, 3vw, 1.875rem); line-height: 1.45; margin: 16px 0 14px; }
+  .benefit p { color: var(--ink-2); }
+  .b-list { list-style: none; padding: 0; margin: 20px 0 0; display: grid; gap: 10px; }
+  .b-list li { display: flex; gap: 10px; font-weight: 600; font-size: .9375rem; }
+  .b-list svg { flex: none; width: 20px; height: 20px; color: var(--brand); margin-top: 4px; }
+  .b-visual { background: linear-gradient(160deg, var(--brand-l), var(--brand-ll)); border-radius: 24px; padding: 32px 16px; display: grid; place-items: center; }
+  .phone-s { width: 100%; max-width: 250px; background: #111827; border-radius: 32px; padding: 9px; box-shadow: var(--shadow); }
+  .phone-s .scr { background: #EEF2F7; border-radius: 24px; min-height: 360px; padding: 18px 12px; display: flex; flex-direction: column; gap: 10px; font-size: .75rem; line-height: 1.55; }
+  .p-time { align-self: center; font-size: .625rem; color: var(--ink-3); background: rgba(255,255,255,.7); border-radius: 999px; padding: 1px 10px; }
+  .form-s { background: #fff; border-radius: 12px; padding: 12px; display: grid; gap: 6px; }
+  .f-q { font-weight: 700; font-size: .6875rem; }
+  .f-scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+  .f-scale span { border: 1px solid var(--line); border-radius: 6px; text-align: center; font-size: .6875rem; padding: 2px 0; }
+  .f-scale span.on { background: var(--brand); border-color: var(--brand); color: #fff; font-weight: 700; }
+  .b-note { text-align: center; font-size: .875rem; color: var(--ink-2); background: var(--wip-l); border-radius: 12px; padding: 12px 16px; margin: 8px auto 12px; max-width: 760px; }
+  .f-opt { border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; font-size: .6875rem; }
+  .f-opt.on { border-color: var(--brand); background: var(--brand-l); color: var(--brand); font-weight: 700; }
+  .f-btn { background: var(--brand); color: #fff; text-align: center; border-radius: 999px; padding: 5px; font-weight: 700; font-size: .6875rem; margin-top: 4px; }
+
   /* ── ステップ ── */
   .steps { display: grid; gap: 16px; }
   @media (min-width: 640px) { .steps { grid-template-columns: repeat(2, 1fr); } }
@@ -251,29 +284,6 @@
   .feature .ic { width: 52px; height: 52px; border-radius: 14px; background: var(--brand-l); color: var(--brand); display: grid; place-items: center; margin-bottom: 16px; }
   .feature .ic svg { width: 26px; height: 26px; }
   .feature p { color: var(--ink-2); font-size: .9375rem; margin-top: 8px; }
-
-  /* ── 事例 ── */
-  .case { display: grid; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--line); }
-  @media (min-width: 960px) { .case { grid-template-columns: 1fr 1.2fr; } }
-  .case-l { background: linear-gradient(150deg, var(--brand) 0%, var(--brand-d) 100%); color: #fff; padding: 36px 28px; display: flex; flex-direction: column; gap: 16px; }
-  .case-l .chip-w { align-self: flex-start; background: rgba(255,255,255,.18); border-radius: 999px; padding: 4px 14px; font-size: .75rem; font-weight: 700; }
-  .case-l h3 { font-size: 1.375rem; line-height: 1.55; }
-  .case-l p { opacity: .92; font-size: .9375rem; }
-  .case-l dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; margin: 8px 0 0; font-size: .875rem; }
-  .case-l dt { opacity: .75; }
-  .case-l dd { margin: 0; font-weight: 700; }
-  .case-r { padding: 24px 24px 22px; }
-  .status { list-style: none; padding: 0; margin: 0; }
-  .status li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line); }
-  .status li:last-child { border-bottom: 0; }
-  .status b { display: block; font-size: .9375rem; }
-  .status span.d { display: block; font-size: .8125rem; color: var(--ink-2); line-height: 1.6; }
-  .chip { font-size: .75rem; font-weight: 800; border-radius: 999px; padding: 3px 12px; white-space: nowrap; }
-  .chip.ok { background: var(--ok-l); color: var(--ok); }
-  .chip.wip { background: var(--wip-l); color: var(--wip); }
-  .chip.todo { background: var(--bg-2); color: var(--ink-3); border: 1px solid var(--line); }
-  .case-note { font-size: .75rem; color: var(--ink-3); margin-top: 12px; }
-  @media (max-width: 479px) { .status li { grid-template-columns: minmax(0, 1fr); gap: 6px; } .status .chip { justify-self: start; } }
 
   /* ── 業種 ── */
   .inds { display: grid; gap: 14px; grid-template-columns: repeat(2, 1fr); }
@@ -399,7 +409,7 @@
     <nav class="nav" aria-label="ページ内">
       <a href="#how">しくみ</a>
       <a href="#features">機能</a>
-      <a href="#case">事例</a>
+      <a href="#benefits">できること</a>
       <a href="#price">料金</a>
       <a href="#faq">よくある質問</a>
     </nav>
@@ -415,9 +425,9 @@
   <div class="hero">
     <div class="container">
       <div>
-        <span class="tag"><b>NEW</b>体験・見学・来店の申込に</span>
+        <span class="tag"><b>NEW</b>申込者が、公式LINEの友だちになる</span>
         <h1><span class="nw">ホームページの申込を、</span><br><span class="hl"><span class="blue">LINE</span>と<span class="blue">Slack</span>で</span><br>取りこぼさない。</h1>
-        <p class="lead">申込が入ったら、お客様とはLINEでつながり、社内のやりとりはSlackの1スレッドに集まり、前日にはLINEで自動リマインド。今のホームページの申込フォームを活かし（受付番号とLINEボタンを加える改修を含みます）、問い合わせから来店までをひとつの流れにします。</p>
+        <p class="lead">申込をきっかけに、お客様が公式LINEの友だちに。<b>前日の参加リマインド</b>、<b>参加後のアンケート</b>、そして<b>その後もお知らせでつながり続ける</b>ことまで、LINEで自然にできるようになります。社内のやりとりはSlackの1スレッドに集約。今の申込フォームを活かして導入します（受付番号とLINEボタンを加える改修を含みます）。</p>
         <div class="hero-cta">
           <span class="btn-wrap"><span class="bubble">ご相談は無料</span>
             <a class="btn btn-primary btn-lg" href="mailto:hunterpresident@gmail.com?subject=%E7%94%B3%E8%BE%BC%E9%80%A3%E6%90%BA%E3%83%AF%E3%83%BC%E3%82%AF%E3%83%95%E3%83%AD%E3%83%BC%E3%81%AE%E5%B0%8E%E5%85%A5%E7%9B%B8%E8%AB%87"><svg aria-hidden="true"><use href="#i-mail"/></svg>導入を相談する</a></span>
@@ -425,9 +435,9 @@
             <a class="btn btn-ghost btn-lg" href="#how">しくみを見る<svg aria-hidden="true"><use href="#i-arrow"/></svg></a></span>
         </div>
         <ul class="hero-points">
-          <li><svg aria-hidden="true"><use href="#i-check-c"/></svg>今の申込フォームを活かせる</li>
-          <li><svg aria-hidden="true"><use href="#i-check-c"/></svg>LINE登録は強制しない</li>
-          <li><svg aria-hidden="true"><use href="#i-check-c"/></svg>無料プランから始められる</li>
+          <li><svg aria-hidden="true"><use href="#i-check-c"/></svg>前日の参加リマインド</li>
+          <li><svg aria-hidden="true"><use href="#i-check-c"/></svg>参加後のアンケート</li>
+          <li><svg aria-hidden="true"><use href="#i-check-c"/></svg>その後もLINEでつながり続ける</li>
         </ul>
       </div>
 
@@ -462,9 +472,9 @@
   <div class="stats">
     <div class="container">
       <div class="stats-grid reveal">
-        <div class="stat"><div class="k">つなぐもの</div><div class="v">3<small>つ</small></div><div class="k">HP・LINE・Slack</div></div>
-        <div class="stat"><div class="k">申込の記録</div><div class="v">1<small>件＝1スレッド</small></div><div class="k">経過が時系列で残る</div></div>
-        <div class="stat"><div class="k">前日リマインド</div><div class="v">自動</div><div class="k">LINEで送信（時刻は設定）</div></div>
+        <div class="stat"><div class="k">来る前に</div><div class="v">前日<small>リマインド</small></div><div class="k">LINEで自動送信</div></div>
+        <div class="stat"><div class="k">来た後に</div><div class="v">アンケート</div><div class="k">LINEの中で回答・お客様ごとに保存</div></div>
+        <div class="stat"><div class="k">その後も</div><div class="v">つながる</div><div class="k">状態に合わせてお知らせ</div></div>
         <div class="stat"><div class="k">お客様の手間</div><div class="v">1<small>回の送信</small></div><div class="k">受付番号を送るだけ</div></div>
       </div>
     </div>
@@ -481,11 +491,11 @@
         <div class="pain reveal"><span class="ic"><svg aria-hidden="true"><use href="#i-user-q"/></svg></span><p>誰が対応したか、日程は決まったかが担当者の頭の中にしかない</p></div>
         <div class="pain reveal"><span class="ic"><svg aria-hidden="true"><use href="#i-unlink"/></svg></span><p>HPから来た人とLINEで話している人が、同じ人なのか分からない</p></div>
         <div class="pain reveal"><span class="ic"><svg aria-hidden="true"><use href="#i-bell"/></svg></span><p>前日の確認連絡を忘れて、当日に来ない人が出る</p></div>
-        <div class="pain reveal"><span class="ic"><svg aria-hidden="true"><use href="#i-yen"/></svg></span><p>LINE配信ツールの月額が高いのに、HPとはつながっていない</p></div>
-        <div class="pain reveal"><span class="ic"><svg aria-hidden="true"><use href="#i-alert"/></svg></span><p>仕組みが止まっていても、気づくのが遅れる</p></div>
+        <div class="pain reveal"><span class="ic"><svg aria-hidden="true"><use href="#i-unlink"/></svg></span><p>体験や見学に来た人と、その後の連絡が途切れてしまう</p></div>
+        <div class="pain reveal"><span class="ic"><svg aria-hidden="true"><use href="#i-alert"/></svg></span><p>参加した人の感想や、申し込まなかった理由を聞けていない</p></div>
       </div>
       <div class="arrow-down" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg></div>
-      <p class="answer reveal">HP・LINE・社内連絡を、<span class="hl">「受付番号」でひとつに</span>つなぎます。</p>
+      <p class="answer reveal">申込者と<span class="hl">LINEでつながる</span>ことで、<br>来る前も、来た後も、その後も手が届きます。</p>
     </div>
   </section>
 
@@ -528,6 +538,96 @@
           <div class="reveal"><b>Slack</b><p>通知・お客様の発言・確定・リマインドが、申込ごとの1スレッドに集まります。</p></div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- LINEでつながると、できること -->
+  <section id="benefits">
+    <div class="container">
+      <div class="sec-head reveal">
+        <span class="eyebrow">WHAT YOU CAN DO</span>
+        <h2>LINEでつながると、<br><span class="hl">申込の「前」も「後」も</span>手が届く</h2>
+        <p>受付番号を送ってもらうことで、お客様が公式LINEの友だちになります。そこから先は、来る前・来た後・その後まで、LINEでお客様に寄り添えます。</p>
+      </div>
+
+      <ol class="journey reveal" aria-label="お客様とのつながりの流れ">
+        <li><span class="j-dot">申込</span><span class="j-t">HPから申込<br>LINEで番号を送る</span></li>
+        <li class="on"><span class="j-dot">前日</span><span class="j-t">参加の<br>リマインド</span></li>
+        <li><span class="j-dot">当日</span><span class="j-t">来店・参加</span></li>
+        <li class="on"><span class="j-dot">翌日</span><span class="j-t">参加後の<br>アンケート</span></li>
+        <li class="on"><span class="j-dot">その後</span><span class="j-t">お知らせで<br>つながり続ける</span></li>
+      </ol>
+
+      <div class="benefit reveal">
+        <div class="b-text">
+          <span class="b-no">01</span><span class="b-when">来る前に</span>
+          <h3>前日に、<br>参加のリマインドが届く</h3>
+          <p>予約の前日に、日時と場所をLINEでお送りします。普段使っているLINEに届くので気づきやすく、「うっかり忘れていた」による欠席を防ぐ助けになります。</p>
+          <ul class="b-list">
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>担当者は日程を決めて書くだけ。送信は自動</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>送ったことは担当者にも知らせるので、送り忘れの心配がない</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>送る時刻や文面はお店に合わせて決められる</li>
+          </ul>
+        </div>
+        <div class="b-visual" aria-hidden="true">
+          <div class="phone-s"><div class="scr">
+            <div class="p-time">10/13（火）18:00</div>
+            <div class="msg-l">【明日のご予約】<br>10/14（水）10:00〜<br>体験レッスン<br>お待ちしています！</div>
+            <div class="msg-r">ありがとうございます！伺います</div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="benefit rev reveal">
+        <div class="b-text">
+          <span class="b-no">02</span><span class="b-when">来た後に</span>
+          <h3>参加後に、<br>アンケートを集められる</h3>
+          <p>担当者が「来店済み」の印を付けると、お礼とアンケートがLINEで自動で届きます（翌日に送るなど、タイミングも決められます）。LINEの中で答えられるので回答の手間が少なく、答えはお客様の情報として保存されます。</p>
+          <ul class="b-list">
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>満足度や感想、入会・購入を迷っている理由を聞ける</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>回答はお客様の情報にひもづいて残るので、次の連絡に活かせる（同じ質問は最新の回答で更新）</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>紙のアンケートの集計や入力がいらない</li>
+          </ul>
+        </div>
+        <div class="b-visual" aria-hidden="true">
+          <div class="phone-s"><div class="scr">
+            <div class="p-time">10/15（木）12:00</div>
+            <div class="msg-l">昨日はご参加ありがとうございました！1分ほどのアンケートにご協力ください</div>
+            <div class="form-s">
+              <div class="f-q">今日の満足度は？（5段階）</div>
+              <div class="f-scale"><span>1</span><span>2</span><span>3</span><span class="on">4</span><span>5</span></div>
+              <div class="f-q">気になったことはありますか？</div>
+              <div class="f-opt on">料金・コースについて</div>
+              <div class="f-opt">日程・通いやすさ</div>
+              <div class="f-btn">送信する</div>
+            </div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="benefit reveal">
+        <div class="b-text">
+          <span class="b-no">03</span><span class="b-when">その後も</span>
+          <h3>すぐ決めなかった人とも、<br>つながり続けられる</h3>
+          <p>体験や見学のあと、その場で申し込む人ばかりではありません。LINEでつながっていれば、空き状況やキャンペーン、役立つ情報を少しずつ届けて、「また今度」を「今」に変えるきっかけを作れます。いわゆる「ナーチャリング（見込みのお客様を育てること）」です。</p>
+          <ul class="b-list">
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>担当者が付けた印（「体験済み」「迷い中」など）やアンケートの回答をもとに、送る相手を分けられる</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>あらかじめ決めた順番・間隔で、自動で届けられる</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>LINEなので気づきやすく、そのまま返信ももらえる</li>
+          </ul>
+        </div>
+        <div class="b-visual" aria-hidden="true">
+          <div class="phone-s"><div class="scr">
+            <div class="p-time">1週間後</div>
+            <div class="msg-l">先日はありがとうございました。来月の平日午前クラスに空きが出ました！</div>
+            <div class="p-time">2週間後</div>
+            <div class="msg-l">【今月だけ】入会金が無料になるキャンペーンのお知らせです</div>
+            <div class="msg-r">平日午前、見学できますか？</div>
+          </div></div>
+        </div>
+      </div>
+      <p class="b-note">お知らせやアンケートの案内も、LINE公式アカウントの月の通数に含まれます。お知らせを続けて送る場合は、LINEの有料プランが現実的です。</p>
+      <p class="demo-note" style="text-align:center">※画面はイメージです。送る内容・タイミングは導入先に合わせて設定します。アンケートとお知らせ配信は、導入時に設定し、導入先の環境でテストしてお届けする機能です。</p>
     </div>
   </section>
 
@@ -592,39 +692,6 @@
     </div>
   </section>
 
-  <section id="case">
-    <div class="container">
-      <div class="sec-head reveal">
-        <span class="eyebrow">CASE</span>
-        <h2>まず自社のテニススクールで<br>検証しています</h2>
-        <p>自社で検証し、本物のLINE・Slackでテストしたものをお届けします。</p>
-      </div>
-      <div class="case reveal">
-        <div class="case-l">
-          <span class="chip-w">検証中の事例</span>
-          <h3>テニススクールの<br>体験レッスン申込</h3>
-          <p>自社で運営するテニススクールの体験レッスン申込に組み込み、本番切替に向けて検証しています。本物のLINE・Slackで結合テストを行い、このあと担当コーチの運用リハーサルを経てから本番に切り替えます。</p>
-          <dl>
-            <dt>業種</dt><dd>スポーツスクール</dd>
-            <dt>地域</dt><dd>神奈川県藤沢市</dd>
-            <dt>体制</dt><dd>担当コーチ1名が一次対応</dd>
-          </dl>
-        </div>
-        <div class="case-r">
-          <ul class="status">
-            <li><span><b>LINE連携</b><span class="d">番号の送信 → 自動返信 → 友だち情報に申込内容 → スレッドに通知</span></span><span class="chip ok">実機テスト合格</span></li>
-            <li><span><b>スレッド集約</b><span class="d">お客様のLINEの発言をスレッドに引用して転送</span></span><span class="chip ok">実機テスト合格</span></li>
-            <li><span><b>予約の確定</b><span class="d">「確定 日付 時刻」を読み取って予約を登録</span></span><span class="chip ok">実機テスト合格</span></li>
-            <li><span><b>前日リマインド</b><span class="d">前日18時にLINEで送信し、スレッドで報告</span></span><span class="chip wip">実地確認中</span></li>
-            <li><span><b>ホームページ</b><span class="d">完了画面・メールに受付番号とLINEボタン</span></span><span class="chip wip">本番反映の準備中</span></li>
-            <li><span><b>運用リハーサル</b><span class="d">担当コーチが申込から体験後フォローまでを一度通す</span></span><span class="chip todo">これから</span></li>
-          </ul>
-          <p class="case-note">2026年10月時点。照合部分は自動テスト（59件）を通し、別の担当による検収を実施しています。「実機テスト合格」は検収の指摘を直す前の版での結果で、直した版は再デプロイして実地で確認する予定です。</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <section class="sec-bg">
     <div class="container">
       <div class="sec-head reveal">
@@ -647,10 +714,10 @@
     <div class="container">
       <div class="sec-head reveal">
         <span class="eyebrow">WHY US</span>
-        <h2>自社で検証した仕組みを、<br>本物の環境でテストして導入します</h2>
+        <h2>自社で検証した仕組みを、<br>導入先の環境でテストしてお届けします</h2>
       </div>
       <div class="reasons">
-        <div class="reason reveal"><span class="no">01</span><span class="lbl">REASON</span><h3>作り手が、自社で検証している</h3><p>自社のテニススクールの体験申込に組み込み、本番に向けて本物のLINE・Slackでテストしてきた仕組みです。テストで見つかった不具合も直しています。</p></div>
+        <div class="reason reveal"><span class="no">01</span><span class="lbl">REASON</span><h3>作り手が、自社で検証している</h3><p>申込 → LINE連携 → スレッドへの通知 → 予約の確定までは、自社の事業で本物のLINE・Slackを使ってテストしています。リマインド・アンケート・お知らせ配信は、導入時に設定し、導入先の環境でテストして提供します。</p></div>
         <div class="reason reveal"><span class="no">02</span><span class="lbl">REASON</span><h3>本番前に、本物の環境でテスト</h3><p>導入時はテスト申込で、LINE連携・確定・リマインド・失敗時の通知までを実際に通し、結果を記録してお渡しします。</p></div>
         <div class="reason reveal"><span class="no">03</span><span class="lbl">REASON</span><h3>自分たちで直せるようにもなれる</h3><p>仕組みを入れるだけでなく、社内で同じものを作れるようになる <a href="../">Claude Code 導入研修</a> もご用意しています。</p></div>
       </div>
@@ -669,7 +736,7 @@
           <li class="reveal"><span class="n">01</span><div><h3>今の流れを伺う</h3><p>申込から来店まで、誰が・何で・どう連絡しているか。担当者、通知先、リマインドの時刻などを決めます。</p></div></li>
           <li class="reveal"><span class="n">02</span><div><h3>アカウントの準備</h3><p>LINE公式アカウント・Cloudflare・Slackを貴社名義でご用意いただきます。手順はご案内し、パスワードや鍵はご自身で入力していただきます。</p></div></li>
           <li class="reveal"><span class="n">03</span><div><h3>構築と結線</h3><p>HPのフォームに受付番号とLINEボタンを加え、LINE・照合サーバー・Slackをつなぎます。</p></div></li>
-          <li class="reveal"><span class="n">04</span><div><h3>本物の環境でテスト</h3><p>テスト申込で、LINE連携・確定・リマインド・失敗時の通知までを実際に通し、結果を記録します。</p></div></li>
+          <li class="reveal"><span class="n">04</span><div><h3>本物の環境でテスト</h3><p>テスト申込で、LINE連携・確定・リマインド・アンケート・お知らせ配信・失敗時の通知までを実際に通し、結果を記録します。</p></div></li>
           <li class="reveal"><span class="n">05</span><div><h3>担当者のリハーサルと本番</h3><p>担当者の方に申込から体験後のフォローまでを一度通していただき、問題がなければ本番に切り替えます。</p></div></li>
         </ol>
       </div>
@@ -692,6 +759,7 @@
             <li><svg aria-hidden="true"><use href="#i-check"/></svg>HPのフォームへの受付番号・LINEボタンの追加</li>
             <li><svg aria-hidden="true"><use href="#i-check"/></svg>LINE・照合サーバー・Slackの結線</li>
             <li><svg aria-hidden="true"><use href="#i-check"/></svg>本物の環境でのテストと記録</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>リマインド・アンケート・お知らせ配信の初期設定</li>
             <li><svg aria-hidden="true"><use href="#i-check"/></svg>担当者の運用リハーサル</li>
           </ul>
           <a class="btn btn-primary" href="mailto:hunterpresident@gmail.com?subject=%E7%94%B3%E8%BE%BC%E9%80%A3%E6%90%BA%E3%83%AF%E3%83%BC%E3%82%AF%E3%83%95%E3%83%AD%E3%83%BC%E3%81%AE%E3%81%8A%E8%A6%8B%E7%A9%8D%E3%82%82%E3%82%8A">見積もりを依頼する</a>
@@ -700,10 +768,10 @@
           <span class="pl">運用費</span>
           <div class="price">各サービスの利用料<small>（貴社のご契約）</small></div>
           <ul>
-            <li><svg aria-hidden="true"><use href="#i-check"/></svg>LINE公式アカウント：無料プランから。月200通までで、スタッフからの送信とリマインドが数に入ります（自動応答は入りません）</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>LINE公式アカウント：無料プランから。月200通までで、スタッフからの送信・リマインド・アンケートの案内・お知らせの配信が数に入ります（自動応答は入りません）</li>
             <li><svg aria-hidden="true"><use href="#i-check"/></svg>Cloudflare：無料プランで始められます。画像の保存にR2を使うためカード登録が必要で、容量を超えた分は課金されます（通常の使い方では無料枠内の想定です）</li>
             <li><svg aria-hidden="true"><use href="#i-check"/></svg>Slack：お使いのプランで動くかを導入前に確認します</li>
-            <li><svg aria-hidden="true"><use href="#i-check"/></svg>件数が多い場合は、各サービスの有料プランをご検討ください</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>アンケートやお知らせ配信を続ける場合は、LINEの有料プランが現実的です。件数に応じてご案内します</li>
             <li><svg aria-hidden="true"><use href="#i-check"/></svg>導入後の保守・更新対応の範囲は、お見積もりの際にご説明します</li>
           </ul>
         </div>
@@ -720,6 +788,7 @@
       <div class="faq">
         <details><summary><span class="q">Q</span>LINEで受付番号を送らないお客様はどうなりますか？<svg class="pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><p>申込自体はHPで完了しているので、従来どおり電話やメールでご連絡いただけます。スレッドに「LINEとつながりました」が出ていないことで、担当者はすぐ判断できます。</p></details>
         <details><summary><span class="q">Q</span>今のホームページのままで使えますか？<svg class="pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><p>申込フォームに、受付番号の発行とLINEボタンを加える改修が必要です。HPを改修できること（制作会社経由でも可）が前提で、自社以外のHPの構成で動くかは事前に確認します。</p></details>
+        <details><summary><span class="q">Q</span>LINEでたくさん送ると、ブロックされませんか？<svg class="pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><p>送る相手（体験済み・迷い中など）と頻度を絞って届けられます。どの人に、いつ、何を送るかはヒアリングで一緒に決め、送りすぎない設計にします。</p></details>
         <details><summary><span class="q">Q</span>すでにLINE公式アカウントを持っています。<svg class="pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><p>今のアカウントを使うか、申込受付用に新しいアカウントを分けるかを、ヒアリングで一緒に決めます。既存の配信やお客様リストに影響が出ない形を優先します。</p></details>
         <details><summary><span class="q">Q</span>個人情報の扱いが心配です。<svg class="pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><p>申込内容とLINEの情報は、貴社名義のアカウントの中に保存されます。受付番号を照合するために一時的に預かる申込データは、60日で自動的に削除されます。</p></details>
         <details><summary><span class="q">Q</span>Slackを使っていません。<svg class="pm" aria-hidden="true"><use href="#i-plus"/></svg></summary><p>現在はSlackへの通知を前提に組んでいます。ほかの連絡ツールをお使いの場合は、対応できるかを個別に確認しますのでご相談ください。</p></details>
