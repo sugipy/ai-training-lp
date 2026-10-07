@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>リマインドくん｜Slackの依頼を埋もれさせない</title>
+<meta name="description" content="Slackで受けた依頼を、メンション1つでタスクに。期限の前後に自動でリマインドして、完了まで見届けるSlackアプリ。">
+<style>
+:root{--bg:#e8e9ee;--face:#eeeff3;--ink:#23253a;--sub:#5d6078;--ac:#3b3f9e;--ac2:#5a5fd0;--hi:#fff;--sh:#c9cad4;--ok:#2f9e6b;--warn:#d9822b}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.8 "Hiragino Sans","Noto Sans JP",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.w{max-width:1040px;margin:0 auto;padding:0 20px}
+.raise{background:var(--face);border-radius:22px;box-shadow:9px 9px 20px var(--sh),-9px -9px 20px var(--hi)}
+.inset{background:var(--bg);border-radius:16px;box-shadow:inset 5px 5px 11px var(--sh),inset -5px -5px 11px var(--hi)}
+header{padding:22px 0}
+header .w{display:flex;justify-content:space-between;align-items:center}
+.logo{font-weight:800;font-size:18px;display:flex;align-items:center;gap:10px}
+.logo i{width:30px;height:30px;border-radius:9px;background:var(--ac);color:#fff;display:grid;place-items:center;font-style:normal;font-size:16px}
+.btn{display:inline-block;background:var(--ac);color:#fff;font-weight:700;padding:14px 30px;border-radius:999px;box-shadow:6px 6px 14px var(--sh),-6px -6px 14px var(--hi);transition:.2s}
+.btn:hover{background:var(--ac2);transform:translateY(-2px)}
+.btn.s{padding:9px 20px;font-size:14px}
+.hero{padding:50px 0 80px}
+.hero .w{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+.tag{display:inline-block;font-size:13px;font-weight:700;color:var(--ac);padding:5px 14px;border-radius:999px;margin-bottom:18px}
+h1{font-size:clamp(30px,4.6vw,48px);line-height:1.35;letter-spacing:.01em}
+h1 em{font-style:normal;color:var(--ac)}
+.lead{margin:22px 0 32px;color:var(--sub)}
+.note{margin-top:14px;font-size:13px;color:var(--sub)}
+.slack{padding:20px;font-size:14px;line-height:1.6}
+.msg{display:flex;gap:10px;margin-bottom:14px}
+.av{flex:none;width:34px;height:34px;border-radius:8px;display:grid;place-items:center;color:#fff;font-weight:700;font-size:14px}
+.msg b{font-size:14px}.msg small{color:var(--sub);margin-left:6px}
+.card{margin:6px 0 0 44px;padding:14px 16px}
+.card h4{font-size:14px}
+.meta{color:var(--sub);font-size:12.5px;margin:4px 0 10px}
+.chip{margin-bottom:6px;display:inline-block;font-size:12px;font-weight:700;padding:4px 12px;border-radius:8px;margin-right:6px;background:var(--face);box-shadow:3px 3px 6px var(--sh),-3px -3px 6px var(--hi)}
+.chip.p{background:var(--ac);color:#fff}
+section{padding:70px 0}
+h2{text-align:center;font-size:clamp(24px,3.4vw,34px);line-height:1.5;margin-bottom:12px}
+.sub{text-align:center;color:var(--sub);margin-bottom:44px}
+.grid{display:grid;gap:26px}
+.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}
+.box{padding:28px 26px}
+.box .ic{font-size:26px;margin-bottom:6px}
+.box h3{font-size:18px;margin-bottom:8px;line-height:1.5}
+.box p{color:var(--sub);font-size:15px}
+.num{width:38px;height:38px;border-radius:50%;background:var(--ac);color:#fff;display:grid;place-items:center;font-weight:800;margin-bottom:14px}
+.problem .box h3{color:var(--ac)}
+.digest{padding:24px;font-size:14px}
+.digest .row{display:flex;justify-content:space-between;gap:10px;padding:11px 14px;margin-top:10px;align-items:center}
+.late{color:var(--warn);font-weight:700;font-size:12px}.today{color:var(--ac);font-weight:700;font-size:12px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.two h2{text-align:left}
+.two .sub{text-align:left;margin-bottom:20px}
+ul.k{list-style:none;padding:0}
+ul.k li{padding:6px 0 6px 26px;position:relative;color:var(--sub)}
+ul.k li:before{content:"✓";position:absolute;left:0;color:var(--ok);font-weight:800}
+.cta{text-align:center;padding:60px 24px;margin-bottom:60px}
+.cta h2{margin-bottom:14px}
+footer{padding:0 0 40px;text-align:center;font-size:13px;color:var(--sub)}
+@media(max-width:820px){.hero .w,.two{grid-template-columns:1fr}.g3,.g2{grid-template-columns:1fr}.two h2,.two .sub{text-align:center}}
+</style>
+</head>
+<body>
+<header><div class="w"><a class="logo" href="#"><i>⏰</i>リマインドくん</a><a class="btn s" href="mailto:hunterpresident@gmail.com?subject=%E3%83%AA%E3%83%9E%E3%82%A4%E3%83%B3%E3%83%89%E3%81%8F%E3%82%93%E3%81%AE%E5%B0%8E%E5%85%A5%E7%9B%B8%E8%AB%87">導入を相談する</a></div></header>
+
+<div class="hero"><div class="w">
+  <div>
+    <span class="tag inset">Slack用タスクリマインドアプリ</span>
+    <h1>「あとでやります」を、<br><em>「やりました」</em>まで。</h1>
+    <p class="lead">Slackで受けた依頼を、メンション1つでタスクに。期限の前後に自動でリマインドして、完了まで見届けます。流れて消えていく依頼を、探す手間を減らします。</p>
+    <a class="btn" href="mailto:hunterpresident@gmail.com?subject=%E3%83%AA%E3%83%9E%E3%82%A4%E3%83%B3%E3%83%89%E3%81%8F%E3%82%93%E3%81%AE%E5%B0%8E%E5%85%A5%E7%9B%B8%E8%AB%87">導入を相談する</a>
+    <p class="note">いつものSlackの中で動きます。新しいツールの習得は不要です。</p>
+  </div>
+  <div class="slack raise">
+    <div class="msg"><div class="av" style="background:#d9822b">田</div><div><b>田中</b><small>10:02</small><br>@リマインドくん 見積書、金曜の18時までにお願いします！</div></div>
+    <div class="msg"><div class="av" style="background:var(--ac)">⏰</div><div style="flex:1"><b>リマインドくん</b><small>10:02</small><br>タスクを作りました ✅
+      <div class="card inset" style="margin-left:0"><h4>見積書を提出する</h4><div class="meta">担当: 佐藤 ／ 依頼: 田中 ／ 期限: 金曜 18:00</div><span class="chip p">完了</span><span class="chip">期限変更</span><span class="chip">担当変更</span></div></div></div>
+  </div>
+</div></div>
+
+<section class="problem"><div class="w">
+  <h2>Slackの依頼は、なぜ埋もれるのか</h2>
+  <p class="sub">依頼は流れる。頼んだ側は忘れ、頼まれた側は見落とす。</p>
+  <div class="grid g3">
+    <div class="box raise"><div class="ic">🌊</div><h3>スレッドに流れて見失う</h3><p>「やっておきます」のひと言は、翌日にはタイムラインの下。誰も悪くないのに、抜け落ちます。</p></div>
+    <div class="box raise"><div class="ic">📝</div><h3>別ツールへの転記が続かない</h3><p>タスク管理ツールに写す手間があるうちは、運用が定着しません。</p></div>
+    <div class="box raise"><div class="ic">😶</div><h3>催促するのが気まずい</h3><p>人から言われると角が立つ催促も、アプリなら自然に届きます。</p></div>
+  </div>
+</div></section>
+
+<section><div class="w">
+  <h2>使い方は、3ステップだけ</h2>
+  <p class="sub">覚えることはメンションひとつです。</p>
+  <div class="grid g3">
+    <div class="box raise"><div class="num">1</div><h3>メンションでタスク化</h3><p><b>@リマインドくん</b> をつけるだけ。絵文字リアクションや、メッセージのショートカット「タスクにする」でも作れます。</p></div>
+    <div class="box raise"><div class="num">2</div><h3>AIが中身を整理</h3><p>タスク名の要約、担当、依頼者、「金曜18時」のような期限まで、文面から自動で読み取ります。</p></div>
+    <div class="box raise"><div class="num">3</div><h3>期限に合わせて自動で催促</h3><p>担当者へのDMと元スレッドでリマインド。ボタン1つで完了にできます。</p></div>
+  </div>
+</div></section>
+
+<section><div class="w two">
+  <div>
+    <h2>毎日2回、DMで<br>「今日やること」が届く</h2>
+    <p class="sub">平日 9:00 と 16:00 に、期限が前日・当日・超過のタスクをまとめてお知らせします。</p>
+    <ul class="k">
+      <li>各行のボタンから、そのまま完了・期限変更</li>
+      <li>期限を過ぎたら、翌営業日から元スレッドで催促</li>
+      <li>5回催促しても動かないタスクは、自動で「保留」へ</li>
+      <li>土日・祝日は催促を止めて、休み明けから再開</li>
+    </ul>
+  </div>
+  <div class="digest raise">
+    <b>📋 今日のタスク（3件）</b>
+    <div class="row inset"><span>見積書を提出する<br><span class="today">本日 18:00</span></span><span class="chip p">完了</span></div>
+    <div class="row inset"><span>請求書の送付先を確認<br><span class="late">1日超過</span></span><span class="chip p">完了</span></div>
+    <div class="row inset"><span>会議室の予約<br><span class="today">明日 12:00</span></span><span class="chip p">完了</span></div>
+  </div>
+</div></section>
+
+<section><div class="w">
+  <h2>そのほかの機能</h2>
+  <p class="sub">必要になってから使えば十分なものを、ひと通り用意しています。</p>
+  <div class="grid g3">
+    <div class="box raise"><div class="ic">🖥️</div><h3>タスクポータル</h3><p>「今日やること」「タスク一覧」「振り返り」をブラウザで確認。Slackでログインするだけです。</p></div>
+    <div class="box raise"><div class="ic">🔒</div><h3>見える範囲は Slack と同じ</h3><p>自分が関わるタスクと、参加しているチャンネルのタスクだけが見えます。見える範囲はSlackの参加状況に合わせています。</p></div>
+    <div class="box raise"><div class="ic">🗂️</div><h3>Notion と同期</h3><p>タスクの状態と期限を、Notionのデータベースと双方向で同期できます（利用時にNotionの接続設定が必要です）。</p></div>
+    <div class="box raise"><div class="ic">📊</div><h3>週次の振り返り</h3><p>今週の作成数・完了数を集計。チームの動きを数字で振り返れます。</p></div>
+    <div class="box raise"><div class="ic">🤖</div><h3>Claude Code から操作</h3><p>MCPに対応。手元のClaude Codeから、自分のタスクの確認・追加・完了ができます。</p></div>
+    <div class="box raise"><div class="ic">🇯🇵</div><h3>日本の働き方に合わせた設計</h3><p>日本の祝日・休日に対応し、期限の読み取りも日本語の言い回しを前提にしています。</p></div>
+  </div>
+</div></section>
+
+<div class="w"><div class="cta raise" id="contact">
+  <h2>まずは、1つのチャンネルから。</h2>
+  <p class="sub" style="margin-bottom:26px">導入のご相談・デモのご希望は、メールでお気軽にどうぞ。</p>
+  <a class="btn" href="mailto:hunterpresident@gmail.com?subject=%E3%83%AA%E3%83%9E%E3%82%A4%E3%83%B3%E3%83%89%E3%81%8F%E3%82%93%E3%81%AE%E5%B0%8E%E5%85%A5%E7%9B%B8%E8%AB%87">導入を相談する</a>
+</div></div>
+<footer><a href="../">Claude Code 導入研修</a>　／　杉田 光<br>Slack は Slack Technologies, LLC、Notion、Claude Code は各社の商標です。画面・氏名はイメージで、実在の人物・組織とは関係ありません。リマインドくんは同社とは無関係の独立したサービスです。</footer>
+</body>
+</html>
