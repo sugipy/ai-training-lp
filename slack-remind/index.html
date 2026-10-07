@@ -59,6 +59,18 @@ ul.k li:before{content:"✓";position:absolute;left:0;color:var(--ok);font-weigh
 .cta{text-align:center;padding:60px 24px;margin-bottom:60px}
 .cta h2{margin-bottom:14px}
 footer{padding:0 0 40px;text-align:center;font-size:13px;color:var(--sub)}
+
+.flow{display:grid;grid-template-columns:1fr 44px 1fr 44px 1fr;align-items:stretch;margin:0 0 40px}
+.fc{padding:20px 18px;font-size:14px;line-height:1.7}
+.fc .cap{display:inline-block;font-size:12px;font-weight:800;color:#fff;background:var(--ac);border-radius:999px;padding:2px 12px;margin-bottom:12px}
+.arr{display:grid;place-items:center;color:var(--ac);font-size:26px;font-weight:800}
+.mk{border-radius:6px;padding:0 5px;font-weight:700}
+.m1{background:#dfe0fb;color:var(--ac)}.m2{background:#fde7cf;color:#a85a10}.m3{background:#d5f0e3;color:#1d7149}.m4{background:#ffe0e0;color:#b33a3a}
+.ex{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.ex div{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-radius:12px;background:var(--bg);box-shadow:inset 3px 3px 7px var(--sh),inset -3px -3px 7px var(--hi)}
+.ex span:first-child{font-size:12px;color:var(--sub)}
+.alt{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:-16px 0 40px;font-size:14px;color:var(--sub);align-items:center}
+@media(max-width:820px){.flow{grid-template-columns:1fr}.arr{transform:rotate(90deg);height:40px}}
 @media(max-width:820px){.hero .w,.two{grid-template-columns:1fr}.g3,.g2{grid-template-columns:1fr}.two h2,.two .sub{text-align:center}}
 </style>
 </head>
@@ -93,6 +105,17 @@ footer{padding:0 0 40px;text-align:center;font-size:13px;color:var(--sub)}
 <section><div class="w">
   <h2>使い方は、3ステップだけ</h2>
   <p class="sub">覚えることはメンションひとつです。</p>
+  <div class="flow">
+    <div class="fc raise"><span class="cap">① いつものSlackで頼む</span>
+      <div><b>田中</b><br>見積書、<span class="mk m2">金曜の18時</span>までに<span class="mk m3">@佐藤</span>さんお願いします！<br><span class="mk m1">@リマインドくん</span></div></div>
+    <div class="arr">➜</div>
+    <div class="fc raise"><span class="cap">② AIが文面を読み取る</span>
+      <div class="ex"><div><span>タスク名</span><b class="mk m1">見積書を提出する</b></div><div><span>担当</span><b class="mk m3">佐藤</b></div><div><span>期限</span><b class="mk m2">金曜 18:00</b></div><div><span>依頼</span><b class="mk m4">田中</b></div></div></div>
+    <div class="arr">➜</div>
+    <div class="fc raise"><span class="cap">③ タスクの出来上がり</span>
+      <div>スレッドに返信が届き、期限になるとDMと元スレッドで知らせます。<div class="inset" style="padding:12px 14px;margin-top:10px"><b>見積書を提出する</b><div class="meta">佐藤 ／ 金曜 18:00</div><span class="chip p">完了</span><span class="chip">期限変更</span></div></div></div>
+  </div>
+  <p class="alt"><span class="chip">絵文字リアクションでも</span><span class="chip">メッセージのショートカットでも</span>タスクにできます</p>
   <div class="grid g3">
     <div class="box raise"><div class="num">1</div><h3>メンションでタスク化</h3><p><b>@リマインドくん</b> をつけるだけ。絵文字リアクションや、メッセージのショートカット「タスクにする」でも作れます。</p></div>
     <div class="box raise"><div class="num">2</div><h3>AIが中身を整理</h3><p>タスク名の要約、担当、依頼者、「金曜18時」のような期限まで、文面から自動で読み取ります。</p></div>
