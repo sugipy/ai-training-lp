@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>リマインドくん — Slackの依頼を、完了まで見届ける</title>
-<meta name="description" content="Slackで受けた依頼を、メンション1つでタスクに。期限の前後に自動でリマインドして、完了まで見届けるSlackアプリ「リマインドくん」の導入支援。">
+<title>リマインド人 — Slackの依頼を、完了まで見届ける</title>
+<meta name="description" content="Slackで受けた依頼を、メンション1つでタスクに。期限の前後に自動でリマインドして、完了まで見届けるSlackアプリ「リマインド人」の導入支援。">
 <meta name="color-scheme" content="light">
 <style>
   :root {
@@ -81,6 +81,7 @@
   .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 800; font-size: 1.125rem; letter-spacing: .02em; }
   .logo-mark { width: 32px; height: 32px; border-radius: 9px; background: var(--brand); display: grid; place-items: center; flex: none; }
   .logo-mark svg { width: 20px; height: 20px; }
+  img.logo-mark { background: #dde1f4; object-fit: cover; }
   .logo small { display: block; font-size: .625rem; font-weight: 500; color: var(--ink-3); letter-spacing: .04em; line-height: 1.2; }
   .nav { display: none; gap: 28px; font-size: .875rem; font-weight: 600; }
   .nav a { text-decoration: none; color: var(--ink-2); }
@@ -147,6 +148,7 @@
   .t-row { display: grid; grid-template-columns: 22px 1fr; gap: 8px; padding: 6px 0; border-top: 1px dashed var(--line); }
   .t-row:first-of-type { border-top: 0; }
   .t-av { width: 22px; height: 22px; border-radius: 6px; background: var(--brand-l); color: var(--brand); font-size: .5625rem; font-weight: 800; display: grid; place-items: center; }
+  img.t-av { background: #dde1f4; object-fit: cover; flex: none; }
   .t-row .m { color: var(--brand); font-weight: 700; }
   .img-note { position: absolute; right: 0; bottom: -26px; font-size: .6875rem; color: var(--ink-3); }
   .float-badge {
@@ -268,6 +270,7 @@
   .tm.parent { background: var(--brand-ll); }
   .av { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; font-size: .6875rem; font-weight: 800; }
   .av.bot { background: var(--brand); color: #fff; }
+  img.av.bot { background: #dde1f4; object-fit: cover; }
   .av.hum { background: var(--wip-l); color: var(--wip); }
   .tm .name { font-weight: 800; font-size: .8125rem; }
   .tm .name time { font-weight: 500; color: var(--ink-3); font-size: .75rem; margin-left: 8px; }
@@ -369,7 +372,7 @@
     * { transition-duration: 1ms !important; }
   }
 
-  /* ── リマインドくん追加分 ── */
+  /* ── リマインド人追加分 ── */
   .v-form { width: 56%; }
   @media (max-width: 559px) { .v-form { width: auto; } }
   .mn { color: var(--brand); font-weight: 700; }
@@ -428,9 +431,9 @@
 
 <header class="site-header">
   <div class="container">
-    <a class="logo" href="#top" aria-label="リマインドくん ページの先頭へ">
-      <span class="logo-mark" aria-hidden="true"><svg viewBox="0 0 24 24" style="color:#fff"><use href="#i-clock"/></svg></span>
-      <span>リマインドくん<small>Slack タスクリマインド</small></span>
+    <a class="logo" href="#top" aria-label="リマインド人 ページの先頭へ">
+      <img class="logo-mark" src="remind-jin.png" alt="" aria-hidden="true">
+      <span>リマインド人<small>Slack タスクリマインド</small></span>
     </a>
     <nav class="nav" aria-label="ページ内">
       <a href="#how">しくみ</a><a href="#features">機能</a><a href="#benefits">できること</a><a href="#price">料金</a><a href="#faq">よくある質問</a>
@@ -466,20 +469,20 @@
         <div class="card v-form">
           <div class="bar"><i></i><i></i><i></i></div>
           <div class="label"># 案件相談 ／ 田中</div>
-          <div style="font-size:.8125rem;line-height:1.65;margin-top:4px">見積書、<b>金曜の18時</b>までに<span class="mn">@佐藤</span>さんお願いします！<br><span class="mn">@リマインドくん</span></div>
+          <div style="font-size:.8125rem;line-height:1.65;margin-top:4px">見積書、<b>金曜の18時</b>までに<span class="mn">@佐藤</span>さんお願いします！<br><span class="mn">@Remind-Jin</span></div>
         </div>
         <div class="v-phone">
           <div class="screen">
-            <div class="head">リマインドくん</div>
-            <div class="msg-l">【今日のタスク 2件】<br>・見積書を提出（本日 18:00）<br>・請求書の確認（1日超過）</div>
+            <div class="head">リマインド人</div>
+            <div class="msg-l">ナマステ〜、今日のタスクが2件あるヨ<br>・見積書を提出（本日 18:00）<br>・請求書の確認（1日超過）</div>
             <div class="msg-r">見積書、完了しました</div>
           </div>
         </div>
         <div class="float-badge">期限の前後に<br>自動リマインド</div>
         <div class="card v-thread">
           <div class="t-head"># 案件相談 ／ スレッド</div>
-          <div class="t-row"><span class="t-av">BOT</span><span><span class="m">@田中</span> ✅ タスクを作りました</span></div>
-          <div class="t-row"><span class="t-av">BOT</span><span><span class="code">見積書を提出する</span> 担当 佐藤 ／ 金曜 18:00</span></div>
+          <div class="t-row"><img class="t-av" src="remind-jin.png" alt=""><span><span class="m">@田中</span> 📝 ナマステ〜、タスクにしといたヨ</span></div>
+          <div class="t-row"><img class="t-av" src="remind-jin.png" alt=""><span><span class="code">見積書を提出する</span> 担当 佐藤 ／ 金曜 18:00</span></div>
         </div>
         <p class="img-note">※画面はイメージです</p>
       </div>
@@ -573,7 +576,7 @@
         <div class="b-text">
           <span class="b-no">01</span><span class="b-when">頼んだ瞬間に</span>
           <h3>メンションするだけで、<br>タスクが出来上がる</h3>
-          <p>頼まれたメッセージに <span class="code">@リマインドくん</span> とつけるだけ。AIがタスク名と「金曜18時」のような期限を読み取り、担当・依頼者とあわせてスレッドに返信します。担当は、本文で最初にメンションされた人から決まります。</p>
+          <p>頼まれたメッセージに <span class="code">@Remind-Jin</span>（リマインド人）とつけるだけ。AIがタスク名と「金曜18時」のような期限を読み取り、担当・依頼者とあわせてスレッドに返信します。担当は、本文で最初にメンションされた人から決まります。</p>
           <ul class="b-list">
             <li><svg aria-hidden="true"><use href="#i-check"/></svg>メンション・絵文字リアクション・ショートカットの3つの入口</li>
             <li><svg aria-hidden="true"><use href="#i-check"/></svg>担当は本文で最初にメンションされた人。いなければスレッドの流れから決まる</li>
@@ -583,9 +586,9 @@
         <div class="b-visual" aria-hidden="true">
           <div class="phone-s"><div class="scr">
             <div class="p-time">10:02</div>
-            <div class="msg-l"><b>田中</b><br>見積書、金曜の18時までに<br>@佐藤 さんお願いします！<br><span class="mn">@リマインドくん</span></div>
+            <div class="msg-l"><b>田中</b><br>見積書、金曜の18時までに<br>@佐藤 さんお願いします！<br><span class="mn">@Remind-Jin</span></div>
             <div class="form-s">
-              <div class="f-q">✅ タスクを作りました</div>
+              <div class="f-q">📝 ナマステ〜、タスクにしといたヨ</div>
               <div class="f-opt on">見積書を提出する</div>
               <div class="f-opt">担当 佐藤 ／ 金曜 18:00</div>
               <div class="f-btn">完了</div>
@@ -657,7 +660,7 @@
 
       <div class="mflow reveal">
         <div class="fc"><span class="cap">① いつものSlackで頼む</span>
-          <div><b>田中</b><br>見積書、<span class="mk m-o">金曜の18時</span>までに<span class="mk m-g">@佐藤</span>さんお願いします！<br><span class="mk m-b">@リマインドくん</span></div></div>
+          <div><b>田中</b><br>見積書、<span class="mk m-o">金曜の18時</span>までに<span class="mk m-g">@佐藤</span>さんお願いします！<br><span class="mk m-b">@Remind-Jin</span></div></div>
         <div class="arr"><svg aria-hidden="true"><use href="#i-arrow"/></svg></div>
         <div class="fc"><span class="cap">② 内容を整理する</span>
           <div class="ex"><div><span>タスク名</span><b class="mk m-b">見積書を提出する</b></div><div><span>担当</span><b class="mk m-g">佐藤</b></div><div><span>期限</span><b class="mk m-o">金曜 18:00</b></div><div><span>依頼</span><b class="mk m-r">田中</b></div></div></div>
@@ -668,7 +671,7 @@
       <p class="alt">絵文字リアクションや、メッセージのショートカット「タスクにする」でも作れます。</p>
 
       <div class="steps">
-        <div class="step reveal"><div class="num">STEP 01</div><h3>メンションで頼む</h3><p>頼まれたメッセージに @リマインドくん とつけます。絵文字・ショートカットでも可。</p><span class="who cus">依頼者</span></div>
+        <div class="step reveal"><div class="num">STEP 01</div><h3>メンションで頼む</h3><p>頼まれたメッセージに @Remind-Jin とつけます。絵文字・ショートカットでも可。</p><span class="who cus">依頼者</span></div>
         <div class="step reveal"><div class="num">STEP 02</div><h3>AIが内容を整理</h3><p>AIがタスク名と期限を読み取り、担当・依頼者とあわせてスレッドに確認を返します。</p><span class="who auto">自動</span></div>
         <div class="step reveal"><div class="num">STEP 03</div><h3>平日はDMで知らせる</h3><p>平日9:00・16:00に、期限が近いタスクと超過したタスクをまとめて送ります。</p><span class="who auto">自動</span></div>
         <div class="step reveal"><div class="num">STEP 04</div><h3>ボタンで完了</h3><p>通知の「完了」ボタンを押すだけ。期限や担当の変更も同じ画面から。</p><span class="who staff">担当者</span></div>
@@ -692,11 +695,11 @@
       <div class="reveal">
         <div class="card thread" role="img" aria-label="依頼スレッドの見本。依頼のあと、タスク化の返信、期限切れの催促、完了の通知が続く。">
           <div class="thread-top"><i></i># 案件相談 ／ スレッド（見本）</div>
-          <div class="tm parent"><span class="av hum">田</span><div><div class="name">田中<time>10:02</time></div><div class="body">見積書、金曜の18時までに <span class="m">@佐藤</span> さんお願いします！ <span class="m">@リマインドくん</span></div></div></div>
-          <div class="tm"><span class="av bot">BOT</span><div><div class="name">リマインドくん<time>10:02</time></div><div class="body"><span class="m">@田中</span> ✅ タスクを作りました<div class="q">見積書を提出する ／ 担当 佐藤 ／ 期限 金曜 18:00</div></div></div></div>
-          <div class="tm"><span class="av bot">BOT</span><div><div class="name">リマインドくん<time>月 10:00</time></div><div class="body"><span class="m">@佐藤</span> ⏰ 期限が過ぎています（1回目）。完了か期限変更をお願いします</div></div></div>
+          <div class="tm parent"><span class="av hum">田</span><div><div class="name">田中<time>10:02</time></div><div class="body">見積書、金曜の18時までに <span class="m">@佐藤</span> さんお願いします！ <span class="m">@Remind-Jin</span></div></div></div>
+          <div class="tm"><img class="av bot" src="remind-jin.png" alt=""><div><div class="name">リマインド人<time>10:02</time></div><div class="body"><span class="m">@田中</span> 📝 ナマステ〜、タスクにしといたヨ<div class="q">見積書を提出する ／ 担当 佐藤 ／ 期限 金曜 18:00</div></div></div></div>
+          <div class="tm"><img class="av bot" src="remind-jin.png" alt=""><div><div class="name">リマインド人<time>月 10:00</time></div><div class="body"><span class="m">@佐藤</span> ⏰ ナマステ〜。これ期限過ぎてるヨ（1回目）　一緒に片付けようネ</div></div></div>
           <div class="tm"><span class="av hum">佐</span><div><div class="name">佐藤<time>月 10:12</time></div><div class="body">「完了」ボタンを押しました</div></div></div>
-          <div class="tm"><span class="av bot">BOT</span><div><div class="name">リマインドくん<time>月 10:12</time></div><div class="body"><span class="m">@田中</span> 🎉 「見積書を提出する」が完了しました</div></div></div>
+          <div class="tm"><img class="av bot" src="remind-jin.png" alt=""><div><div class="name">リマインド人<time>月 10:12</time></div><div class="body"><span class="m">@田中</span> ✅ 完了！おつかれさまだヨ: 見積書を提出する</div></div></div>
         </div>
         <p class="demo-note">表示内容は説明用の見本です。お名前・文言は導入先に合わせて設定します。</p>
       </div>
@@ -838,7 +841,7 @@
 
 <footer class="site">
   <div class="container">
-    <span>リマインドくん（Slack タスクリマインド）<br>Slack は Slack Technologies, LLC、Notion、Claude Code は各社の商標または登録商標です。本ページは各社と提携・承認の関係にありません。画面・氏名はイメージで、実在の人物・組織とは関係ありません。</span>
+    <span>リマインド人（Slack タスクリマインド）<br>Slack は Slack Technologies, LLC、Notion、Claude Code は各社の商標または登録商標です。本ページは各社と提携・承認の関係にありません。画面・氏名はイメージで、実在の人物・組織とは関係ありません。</span>
     <span><a href="../">Claude Code 導入研修</a>　／　杉田 光</span>
   </div>
 </footer>
