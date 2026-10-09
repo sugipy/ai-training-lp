@@ -6,6 +6,9 @@
 <title>リマインド人 — Slackの依頼を、完了まで見届ける</title>
 <meta name="description" content="Slackで受けた依頼を、メンション1つでタスクに。期限の前後に自動でリマインドして、完了まで見届けるSlackアプリ「リマインド人」の導入支援。">
 <meta name="color-scheme" content="light">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@700&display=swap" rel="stylesheet">
 <style>
   :root {
     --brand: #2453C7;
@@ -392,6 +395,73 @@
   .chip.p { background: var(--brand); border-color: var(--brand); color: #fff; }
   .alt { text-align: center; color: var(--ink-2); font-size: .875rem; margin: -32px 0 48px; }
   @media (max-width: 799px) { .mflow { grid-template-columns: 1fr; } .mflow .arr { height: 36px; transform: rotate(90deg); } .alt { margin-top: -24px; } }
+  /* ── インド風テーマ（2026-10-09） ── */
+  :root {
+    --brand: #3b3f9e; --brand-d: #2a2d78; --brand-l: #ecebfb; --brand-ll: #fff7e8;
+    --accent: #f7b733; --saffron: #f29f05; --magenta: #c2185b; --peacock: #0f7c80;
+    --line: #ead9b8; --bg: #fffaf0; --bg-2: #fbf3e4;
+    --deco: "Kaisei Decol", "Hiragino Mincho ProN", serif;
+  }
+  body { background-color: var(--bg);
+    background-image: radial-gradient(circle at 1px 1px, rgba(194,24,91,.08) 1.2px, transparent 1.6px); background-size: 22px 22px; }
+  .hero h1, h2 { font-family: var(--deco); font-weight: 700; }
+  .eyebrow { color: var(--magenta); }
+  .btn-primary { background: var(--saffron); color: var(--ink); box-shadow: 0 4px 0 #b57400; }
+  .btn-primary:hover { background: var(--accent); }
+  .site-header { background: var(--brand); border-bottom: 0; }
+  .site-header .logo, .site-header .nav a { color: #fff; }
+  .site-header .nav a:hover { color: var(--accent); }
+  .site-header .logo small { color: #c9c8f0; }
+  img.logo-mark { border-radius: 50%; border: 2px solid var(--accent); }
+  .site-header .btn-ghost { background: transparent; color: #fff; border-color: rgba(255,255,255,.7); }
+  .site-header .btn-ghost:hover { background: rgba(255,255,255,.12); }
+  /* マリーゴールドの飾り紐（トーラン） */
+  .site-header::after { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 40px; pointer-events: none;
+    background:
+      radial-gradient(circle at 50% 10px, var(--saffron) 0 6px, transparent 6.5px),
+      radial-gradient(circle at 50% 23px, var(--accent) 0 5px, transparent 5.5px),
+      radial-gradient(circle at 50% 34px, var(--saffron) 0 4px, transparent 4.5px),
+      radial-gradient(ellipse 26px 10px at 50% 0, var(--peacock) 0 70%, transparent 72%);
+    background-size: 40px 40px; background-repeat: repeat-x; filter: drop-shadow(0 2px 1px rgba(0,0,0,.12)); }
+  .hero { background: radial-gradient(900px 480px at 85% 0%, #ffe6b0 0%, transparent 62%), linear-gradient(180deg, #fff3dc 0%, var(--bg) 100%); padding-top: 72px; }
+  .hl { background: linear-gradient(transparent 62%, rgba(247,183,51,.6) 62%); }
+  .tag b { background: var(--magenta); }
+  /* ムガルのアーチ窓にキャラ（スマホ幅で隠れていた端末画面の位置に置く） */
+  .arch { position: absolute; right: 0; top: -14px; width: 44%; max-width: 230px; }
+  .arch .frame { position: relative; aspect-ratio: 5 / 6; overflow: hidden;
+    border-radius: 50% 50% 12px 12px / 34% 34% 12px 12px;
+    background: radial-gradient(circle at 50% 30%, #fff6dd 0, #ffe1a3 45%, var(--accent) 100%);
+    border: 5px solid var(--peacock); box-shadow: 0 0 0 5px #fff, 0 0 0 8px var(--magenta), var(--shadow); }
+  .arch .frame::before { content: ""; position: absolute; inset: 0; opacity: .35;
+    background: repeating-conic-gradient(from 0deg at 50% 38%, rgba(194,24,91,.25) 0 6deg, transparent 6deg 15deg); }
+  .arch .frame img { position: absolute; left: 50%; bottom: 0; width: 88%; transform: translateX(-50%); }
+  .arch .say { position: absolute; left: -46%; top: 6%; background: #fff; border: 2px solid var(--ink); border-radius: 14px;
+    padding: 6px 12px; font-weight: 800; font-size: .75rem; line-height: 1.5; white-space: nowrap; box-shadow: 3px 3px 0 var(--ink); }
+  .arch .say::after { content: ""; position: absolute; right: -10px; top: 14px; border: 8px solid transparent; border-left-color: var(--ink); border-right: 0; }
+  @media (max-width: 559px) {
+    .arch { position: relative; top: 0; width: 62%; max-width: 220px; justify-self: end; order: -1; margin-right: 8px; }
+    .arch .say { left: auto; right: 92%; }
+  }
+  /* カードの上端に波形の縁飾り */
+  .pain, .feature, .reason, .step, .plan, .flow li, .hub-legend div { position: relative; background: #fffdf8; }
+  .pain::before, .feature::before, .reason::before, .step::before, .plan::before {
+    content: ""; position: absolute; left: 14px; right: 14px; top: -1px; height: 8px;
+    background: radial-gradient(circle at 8px 0, var(--c, var(--saffron)) 0 6px, transparent 6.5px) 0 0 / 16px 8px repeat-x; }
+  .pain { --c: var(--magenta); }
+  .feature { --c: var(--peacock); }
+  .feature .ic, .ind .ic { background: #fff1d6; color: var(--magenta); }
+  .reason .no { color: #f6dfb0; }
+  .stats-grid { border: 1.5px solid var(--line); }
+  .b-visual { background: radial-gradient(circle at 50% 20%, #fff6dd, #ffe1a3); }
+  /* 最後のCTA */
+  .final { background: radial-gradient(circle at 50% 130%, var(--magenta), transparent 62%), var(--brand); position: relative; overflow: hidden; }
+  .final::before { content: ""; position: absolute; inset: 0; opacity: .14; pointer-events: none;
+    background: repeating-conic-gradient(from 0deg at 50% 50%, #fff 0 4deg, transparent 4deg 12deg); }
+  .final .container { position: relative; }
+  .final-chara { width: 120px; margin: 0 auto 8px; filter: drop-shadow(0 6px 8px rgba(0,0,0,.25)); }
+  .final .btn-primary { background: var(--saffron); color: var(--ink); }
+  .floating { background: var(--brand); }
+  footer.site { background: #1f1b3a; }
 </style>
 </head>
 <body>
@@ -465,19 +535,13 @@
         </ul>
       </div>
 
-      <div class="visual" role="img" aria-label="画面イメージ。Slackで「見積書を金曜18時までに」とメンションすると、スレッドにタスクが作られ、担当者のDMに今日のタスクが届く様子。">
+      <div class="visual" role="img" aria-label="画面イメージ。Slackで「見積書を金曜18時までに」とメンションすると、スレッドにタスクが作られる様子と、キャラクターのリマインド人。">
         <div class="card v-form">
           <div class="bar"><i></i><i></i><i></i></div>
           <div class="label"># 案件相談 ／ 田中</div>
           <div style="font-size:.8125rem;line-height:1.65;margin-top:4px">見積書、<b>金曜の18時</b>までに<span class="mn">@佐藤</span>さんお願いします！<br><span class="mn">@Remind-Jin</span></div>
         </div>
-        <div class="v-phone">
-          <div class="screen">
-            <div class="head">リマインド人</div>
-            <div class="msg-l">ナマステ〜、今日のタスクが2件あるヨ<br>・見積書を提出（本日 18:00）<br>・請求書の確認（1日超過）</div>
-            <div class="msg-r">見積書、完了しました</div>
-          </div>
-        </div>
+        <div class="arch"><div class="frame"><img src="remind-jin-full.png" alt="リマインド人のキャラクター。ターバンに時計をつけ、人差し指を立てている"></div><div class="say">ナマステ〜<br>期限まで見届けるヨ</div></div>
         <div class="float-badge">期限の前後に<br>自動リマインド</div>
         <div class="card v-thread">
           <div class="t-head"># 案件相談 ／ スレッド</div>
@@ -827,6 +891,7 @@
 
   <section class="final">
     <div class="container">
+      <img class="final-chara" src="remind-jin-full.png" alt="">
       <h2>Slackで頼んだ仕事が、<br>流れていく悩みを聞かせてください</h2>
       <p>「うちのSlackでも使えるのか」という段階のご相談で構いません。仕組みを入れる方が早いのか、研修で自社で作れるようになる方が合っているのかも含めてお答えします。</p>
       <div class="row">
