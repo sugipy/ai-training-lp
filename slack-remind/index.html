@@ -486,6 +486,23 @@
   .rtl-note { text-align: center; color: var(--ink-2); font-size: .875rem; margin-top: 28px; }
   @media (max-width: 959px) { .rtl { grid-template-columns: repeat(2, minmax(0, 1fr)); } .rtl::before { display: none; } }
   @media (max-width: 559px) { .rtl { grid-template-columns: 1fr; } }
+  /* 画面例を SCREEN と同じ Slack 風カードに */
+  .b-visual .thread { width: 100%; max-width: 440px; text-align: left; }
+  .dm-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 8px; padding: 8px 10px;
+    border-radius: 10px; background: var(--bg-2); border: 1px solid var(--line); font-size: .8125rem; line-height: 1.5; }
+  .dm-row b { display: block; }
+  .dm-row .d { font-style: normal; font-size: .75rem; font-weight: 700; color: var(--brand); }
+  .dm-row.late .d { color: var(--magenta); }
+  .dm-row.done { opacity: .6; } .dm-row.done b { text-decoration: line-through; }
+  .dm-row .chip { margin: 0; flex: none; }
+  .pg { margin-top: 10px; font-size: .6875rem; font-weight: 800; color: var(--ink-3); letter-spacing: .06em; }
+  .mflow .fc-s { padding: 0; background: transparent; border: 0; box-shadow: none; display: flex; flex-direction: column; }
+  .mflow .fc-s::before { display: none; }
+  .mflow .fc-s .cap { align-self: flex-start; }
+  .mflow .fc-s .thread { flex: 1; }
+  .mflow .fc-s .tm { grid-template-columns: 30px minmax(0, 1fr); gap: 10px; padding: 12px 14px; font-size: .8125rem; }
+  .mflow .fc-s .av { width: 30px; height: 30px; }
+  .mflow .fc-s .ex div { background: #fff; }
 </style>
 </head>
 <body>
@@ -672,16 +689,7 @@
           </ul>
         </div>
         <div class="b-visual" aria-hidden="true">
-          <div class="phone-s"><div class="scr">
-            <div class="p-time">10:02</div>
-            <div class="msg-l"><b>田中</b><br>見積書、金曜の18時までに<br>@佐藤 さんお願いします！<br><span class="mn">@Remind-Jin</span></div>
-            <div class="form-s">
-              <div class="f-q">🙏 ナマステ、田中ジー！ご依頼、たしかに承りました</div>
-              <div class="f-opt on">見積書を提出する</div>
-              <div class="f-opt">担当 佐藤 ／ 金曜 18:00</div>
-              <div class="f-btn">完了</div>
-            </div>
-          </div></div>
+          <div class="card thread"><div class="thread-top"><i></i># 案件相談 ／ スレッド</div><div class="tm parent"><span class="av hum">田</span><div><div class="name">田中<time>10:02</time></div><div class="body">見積書、金曜の18時までに <span class="m">@佐藤</span> さんお願いします！ <span class="m">@Remind-Jin</span></div></div></div><div class="tm"><img class="av bot" src="remind-jin.png" alt=""><div><div class="name">リマインド人<time>10:02</time></div><div class="body"><span class="m">@田中</span> 🙏 ナマステ、田中ジー！ご依頼、たしかに承りました<div class="q">見積書を提出する ／ 担当 佐藤 ／ 期限 金曜 18:00</div><span class="chip p">完了</span><span class="chip">期限変更</span><span class="chip">担当変更</span></div></div></div></div>
         </div>
       </div>
 
@@ -697,16 +705,7 @@
           </ul>
         </div>
         <div class="b-visual" aria-hidden="true">
-          <div class="phone-s"><div class="scr">
-            <div class="p-time">平日 9:00</div>
-            <div class="msg-l">【今日のタスク】</div>
-            <div class="form-s">
-              <div class="f-opt on">見積書を提出する ／ 本日 18:00</div>
-              <div class="f-opt">請求書の確認 ／ 1日超過</div>
-              <div class="f-opt">会議室の予約 ／ 明日 12:00</div>
-              <div class="f-btn">完了にする</div>
-            </div>
-          </div></div>
+          <div class="card thread"><div class="thread-top"><i></i>リマインド人 ／ ダイレクトメッセージ</div><div class="tm"><img class="av bot" src="remind-jin.png" alt=""><div><div class="name">リマインド人<time>平日 9:00</time></div><div class="body">☀️ スプラバート（おはようございます）、佐藤ジー！本日のタスクです<div class="dm-row"><span><b>見積書を提出する</b><em class="d">本日 18:00</em></span><span class="chip p">完了</span></div><div class="dm-row late"><span><b>請求書の確認</b><em class="d">1日超過</em></span><span class="chip p">完了</span></div><div class="dm-row"><span><b>会議室の予約</b><em class="d">明日 12:00</em></span><span class="chip p">完了</span></div></div></div></div></div>
         </div>
       </div>
 
@@ -722,17 +721,7 @@
           </ul>
         </div>
         <div class="b-visual" aria-hidden="true">
-          <div class="phone-s"><div class="scr">
-            <div class="p-time">タスクポータル</div>
-            <div class="form-s">
-              <div class="f-q">期限が近い</div>
-              <div class="f-opt on">見積書を提出する</div>
-              <div class="f-q">進行中</div>
-              <div class="f-opt">請求書の確認</div>
-              <div class="f-q">完了</div>
-              <div class="f-opt">会議室の予約</div>
-            </div>
-          </div></div>
+          <div class="card thread"><div class="thread-top"><i></i>タスクポータル（ブラウザ）</div><div class="tm"><img class="av bot" src="remind-jin.png" alt=""><div><div class="name">佐藤さんのタスク<time>今週の完了 5件</time></div><div class="body"><div class="pg">期限が近い</div><div class="dm-row"><span><b>見積書を提出する</b><em class="d">本日 18:00</em></span><span class="chip">期限変更</span></div><div class="pg">進行中</div><div class="dm-row"><span><b>請求書の確認</b><em class="d">担当 佐藤</em></span><span class="chip p">完了</span></div><div class="pg">完了</div><div class="dm-row done"><span><b>会議室の予約</b><em class="d">完了済み</em></span></div></div></div></div></div>
         </div>
       </div>
       <p class="demo-note" style="text-align:center">※画面はイメージです。通知の時刻や休日などは、導入先に合わせて設定します。</p>
@@ -747,14 +736,11 @@
       </div>
 
       <div class="mflow reveal">
-        <div class="fc"><span class="cap">① いつものSlackで頼む</span>
-          <div><b>田中</b><br>見積書、<span class="mk m-o">金曜の18時</span>までに<span class="mk m-g">@佐藤</span>さんお願いします！<br><span class="mk m-b">@Remind-Jin</span></div></div>
+        <div class="fc fc-s"><span class="cap">① いつものSlackで頼む</span><div class="card thread"><div class="thread-top"><i></i># 案件相談</div><div class="tm parent"><span class="av hum">田</span><div><div class="name">田中<time>10:02</time></div><div class="body">見積書、<span class="mk m-o">金曜の18時</span>までに<span class="mk m-g">@佐藤</span>さんお願いします！<br><span class="mk m-b">@Remind-Jin</span></div></div></div></div></div>
         <div class="arr"><svg aria-hidden="true"><use href="#i-arrow"/></svg></div>
-        <div class="fc"><span class="cap">② 内容を整理する</span>
-          <div class="ex"><div><span>タスク名</span><b class="mk m-b">見積書を提出する</b></div><div><span>担当</span><b class="mk m-g">佐藤</b></div><div><span>期限</span><b class="mk m-o">金曜 18:00</b></div><div><span>依頼</span><b class="mk m-r">田中</b></div></div></div>
+        <div class="fc fc-s"><span class="cap">② 内容を整理する</span><div class="card thread"><div class="thread-top"><i></i># 案件相談 ／ スレッド</div><div class="tm"><img class="av bot" src="remind-jin.png" alt=""><div><div class="name">リマインド人<time>10:02</time></div><div class="body">🙏 ご依頼を読み取りました<div class="ex"><div><span>タスク名</span><b class="mk m-b">見積書を提出する</b></div><div><span>担当</span><b class="mk m-g">佐藤</b></div><div><span>期限</span><b class="mk m-o">金曜 18:00</b></div><div><span>依頼</span><b class="mk m-r">田中</b></div></div></div></div></div></div></div>
         <div class="arr"><svg aria-hidden="true"><use href="#i-arrow"/></svg></div>
-        <div class="fc"><span class="cap">③ タスクの出来上がり</span>
-          <div>スレッドに返信が届き、期限になるとDMと元スレッドで知らせます。<div class="tcard"><b>見積書を提出する</b><div class="mt">佐藤 ／ 金曜 18:00</div><span class="chip p">完了</span><span class="chip">期限変更</span><span class="chip">担当変更</span></div></div></div>
+        <div class="fc fc-s"><span class="cap">③ タスクの出来上がり</span><div class="card thread"><div class="thread-top"><i></i># 案件相談 ／ スレッド</div><div class="tm"><img class="av bot" src="remind-jin.png" alt=""><div><div class="name">リマインド人<time>10:02</time></div><div class="body"><span class="m">@田中</span> 🙏 ナマステ、田中ジー！タスクにしておきました。期限が近づいたら、DMと元スレッドでお知らせします<div class="tcard"><b>見積書を提出する</b><div class="mt">佐藤 ／ 金曜 18:00</div><span class="chip p">完了</span><span class="chip">期限変更</span><span class="chip">担当変更</span></div></div></div></div></div></div>
       </div>
       <p class="alt">絵文字リアクションや、メッセージのショートカット「タスクにする」でも作れます。</p>
 
