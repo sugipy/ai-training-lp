@@ -462,6 +462,30 @@
   .final .btn-primary { background: var(--saffron); color: var(--ink); }
   .floating { background: var(--brand); }
   footer.site { background: #1f1b3a; }
+  /* 催促のシーン */
+  .rtl { display: grid; gap: 22px; grid-template-columns: repeat(4, minmax(0, 1fr)); position: relative; }
+  .rtl::before { content: ""; position: absolute; left: 6%; right: 6%; top: 17px; height: 6px;
+    background: radial-gradient(circle, var(--saffron) 0 3px, transparent 3.5px) 0 0 / 14px 6px repeat-x; }
+  .rs { position: relative; display: flex; flex-direction: column; gap: 10px; }
+  .rs .when { align-self: center; position: relative; background: var(--brand); color: #fff; font-weight: 800; font-size: .8125rem;
+    border-radius: 999px; padding: 6px 16px; box-shadow: 0 0 0 4px var(--bg); white-space: nowrap; }
+  .rs.late .when { background: var(--magenta); }
+  .rs.hold .when { background: var(--peacock); }
+  .rs .where { text-align: center; font-size: .75rem; font-weight: 700; color: var(--ink-3); }
+  .rs .card { padding: 14px 14px 16px; font-size: .8125rem; line-height: 1.7; flex: 1; }
+  .rs .who-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-weight: 800; font-size: .8125rem; }
+  .rs .who-row img { width: 28px; height: 28px; border-radius: 7px; background: #dde1f4; }
+  .rs .who-row time { font-weight: 500; color: var(--ink-3); font-size: .6875rem; }
+  .rs .m { color: var(--brand); font-weight: 700; }
+  .rs .line { margin-top: 8px; padding: 8px 10px; border-radius: 10px; background: var(--bg-2); border: 1px solid var(--line); font-size: .75rem; }
+  .rs .line b { display: block; }
+  .rs .line .d { color: var(--brand); font-weight: 700; }
+  .rs.late .line .d { color: var(--magenta); }
+  .rs .chips { margin-top: 2px; }
+  .rs .cap { font-size: .8125rem; color: var(--ink-2); text-align: center; line-height: 1.6; }
+  .rtl-note { text-align: center; color: var(--ink-2); font-size: .875rem; margin-top: 28px; }
+  @media (max-width: 959px) { .rtl { grid-template-columns: repeat(2, minmax(0, 1fr)); } .rtl::before { display: none; } }
+  @media (max-width: 559px) { .rtl { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -541,11 +565,11 @@
           <div class="label"># 案件相談 ／ 田中</div>
           <div style="font-size:.8125rem;line-height:1.65;margin-top:4px">見積書、<b>金曜の18時</b>までに<span class="mn">@佐藤</span>さんお願いします！<br><span class="mn">@Remind-Jin</span></div>
         </div>
-        <div class="arch"><div class="frame"><img src="remind-jin-full.png" alt="リマインド人のキャラクター。ターバンに時計をつけ、人差し指を立てている"></div><div class="say">ナマステ〜<br>期限まで見届けるヨ</div></div>
+        <div class="arch"><div class="frame"><img src="remind-jin-full.png" alt="リマインド人のキャラクター。ターバンに時計をつけ、人差し指を立てている"></div><div class="say">ナマステ🙏<br>期限まで、私がお供します</div></div>
         <div class="float-badge">期限の前後に<br>自動リマインド</div>
         <div class="card v-thread">
           <div class="t-head"># 案件相談 ／ スレッド</div>
-          <div class="t-row"><img class="t-av" src="remind-jin.png" alt=""><span><span class="m">@田中</span> 📝 ナマステ〜、タスクにしといたヨ</span></div>
+          <div class="t-row"><img class="t-av" src="remind-jin.png" alt=""><span><span class="m">@田中</span> 🙏 ナマステ、田中ジー！タスクにしておきました</span></div>
           <div class="t-row"><img class="t-av" src="remind-jin.png" alt=""><span><span class="code">見積書を提出する</span> 担当 佐藤 ／ 金曜 18:00</span></div>
         </div>
         <p class="img-note">※画面はイメージです</p>
@@ -652,7 +676,7 @@
             <div class="p-time">10:02</div>
             <div class="msg-l"><b>田中</b><br>見積書、金曜の18時までに<br>@佐藤 さんお願いします！<br><span class="mn">@Remind-Jin</span></div>
             <div class="form-s">
-              <div class="f-q">📝 ナマステ〜、タスクにしといたヨ</div>
+              <div class="f-q">🙏 ナマステ、田中ジー！ご依頼、たしかに承りました</div>
               <div class="f-opt on">見積書を提出する</div>
               <div class="f-opt">担当 佐藤 ／ 金曜 18:00</div>
               <div class="f-btn">完了</div>
@@ -760,13 +784,57 @@
         <div class="card thread" role="img" aria-label="依頼スレッドの見本。依頼のあと、タスク化の返信、期限切れの催促、完了の通知が続く。">
           <div class="thread-top"><i></i># 案件相談 ／ スレッド（見本）</div>
           <div class="tm parent"><span class="av hum">田</span><div><div class="name">田中<time>10:02</time></div><div class="body">見積書、金曜の18時までに <span class="m">@佐藤</span> さんお願いします！ <span class="m">@Remind-Jin</span></div></div></div>
-          <div class="tm"><img class="av bot" src="remind-jin.png" alt=""><div><div class="name">リマインド人<time>10:02</time></div><div class="body"><span class="m">@田中</span> 📝 ナマステ〜、タスクにしといたヨ<div class="q">見積書を提出する ／ 担当 佐藤 ／ 期限 金曜 18:00</div></div></div></div>
-          <div class="tm"><img class="av bot" src="remind-jin.png" alt=""><div><div class="name">リマインド人<time>月 10:00</time></div><div class="body"><span class="m">@佐藤</span> ⏰ ナマステ〜。これ期限過ぎてるヨ（1回目）　一緒に片付けようネ</div></div></div>
+          <div class="tm"><img class="av bot" src="remind-jin.png" alt=""><div><div class="name">リマインド人<time>10:02</time></div><div class="body"><span class="m">@田中</span> 🙏 ナマステ、田中ジー！ご依頼、たしかに承りました。タスクにしておきますね<div class="q">見積書を提出する ／ 担当 佐藤 ／ 期限 金曜 18:00</div></div></div></div>
+          <div class="tm"><img class="av bot" src="remind-jin.png" alt=""><div><div class="name">リマインド人<time>月 10:00</time></div><div class="body"><span class="m">@佐藤</span> ⏰ ナマステ、佐藤ジー。こちら、期限を過ぎております（1/5回目）。お手すきの際にご対応をお願いいたします🙏</div></div></div>
           <div class="tm"><span class="av hum">佐</span><div><div class="name">佐藤<time>月 10:12</time></div><div class="body">「完了」ボタンを押しました</div></div></div>
-          <div class="tm"><img class="av bot" src="remind-jin.png" alt=""><div><div class="name">リマインド人<time>月 10:12</time></div><div class="body"><span class="m">@田中</span> ✅ 完了！おつかれさまだヨ: 見積書を提出する</div></div></div>
+          <div class="tm"><img class="av bot" src="remind-jin.png" alt=""><div><div class="name">リマインド人<time>月 10:12</time></div><div class="body"><span class="m">@田中</span> ✅ ダンニャワード（ありがとうございます）！田中ジー、完了のお知らせです: 見積書を提出する</div></div></div>
         </div>
         <p class="demo-note">表示内容は説明用の見本です。お名前・文言は導入先に合わせて設定します。</p>
       </div>
+    </div>
+  </section>
+
+  <section id="remind" class="sec-bg">
+    <div class="container">
+      <div class="sec-head reveal">
+        <span class="eyebrow">REMIND</span>
+        <h2>催促は、こんなふうに届きます</h2>
+        <p style="color:var(--ink-2)">期限の前日から、リマインド人が丁寧にお声がけします。言いにくい催促も、角を立てずにアプリが代わりに。</p>
+      </div>
+      <div class="rtl reveal">
+        <div class="rs">
+          <span class="when">前日 16:00</span><span class="where">担当者へのDM</span>
+          <div class="card"><div class="who-row"><img src="remind-jin.png" alt="">リマインド人<time>木 16:00</time></div>
+            🙏 ナマステ、佐藤ジー。明日が期限のタスクが1件ございます。
+            <div class="line"><b>見積書を提出する</b><span class="d">明日 18:00</span></div>
+            <div class="chips"><span class="chip p">完了</span><span class="chip">期限変更</span></div></div>
+          <p class="cap">期限の前の日に、まとめてお知らせ</p>
+        </div>
+        <div class="rs">
+          <span class="when">当日 9:00</span><span class="where">担当者へのDM</span>
+          <div class="card"><div class="who-row"><img src="remind-jin.png" alt="">リマインド人<time>金 9:00</time></div>
+            ☀️ スプラバート（おはようございます）、佐藤ジー！本日18時が期限です。チャイでも一杯いかがですか。
+            <div class="line"><b>見積書を提出する</b><span class="d">本日 18:00</span></div>
+            <div class="chips"><span class="chip p">完了</span><span class="chip">期限変更</span></div></div>
+          <p class="cap">当日の朝にも、もう一度</p>
+        </div>
+        <div class="rs late">
+          <span class="when">過ぎたら 翌営業日 10:00</span><span class="where">元のスレッド</span>
+          <div class="card"><div class="who-row"><img src="remind-jin.png" alt="">リマインド人<time>月 10:00</time></div>
+            ⏰ <span class="m">@佐藤</span> ナマステ、佐藤ジー。こちら、期限を過ぎております（1/5回目）。お手すきの際にご対応をお願いいたします🙏
+            <div class="line"><b>見積書を提出する</b><span class="d">金曜 18:00 → 1日超過</span></div>
+            <div class="chips"><span class="chip p">完了</span><span class="chip">期限変更</span></div></div>
+          <p class="cap">依頼者も見ているスレッドで、営業日ごとに</p>
+        </div>
+        <div class="rs hold">
+          <span class="when">5回お声がけしたら</span><span class="where">元のスレッド</span>
+          <div class="card"><div class="who-row"><img src="remind-jin.png" alt="">リマインド人<time>金 10:00</time></div>
+            🪷 佐藤ジー、5回お声がけいたしましたので、いったん「保留」にいたしました。期限を変えていただければ、またお知らせいたします。
+            <div class="line"><b>見積書を提出する</b><span class="d">保留中</span></div></div>
+          <p class="cap">追いかけすぎず、自動で保留へ</p>
+        </div>
+      </div>
+      <p class="rtl-note">土日・祝日はスレッドでの催促をお休みして、休み明けから再開します。表示内容は説明用の見本です。</p>
     </div>
   </section>
 
